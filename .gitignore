@@ -6,8 +6,16 @@ backend/venv/
 __pycache__/
 *.pyc
 
-# Environment
+# Environment Variables
 .env
+backend/.env
 
-# OS
+# Uploads
+backend/uploads/
+
+# OS Files
 .DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

@@ -1,65 +1,27 @@
-def extract_company(text):
+# services/pdf_extractor.py
+import pdfplumber
+import fitz  # pymupdf fallback
 
-    companies = [
-        "Oracle",
-        "HSBC",
-        "NPCI",
-        "Axxela",
-        "Google",
-        "Morgan Stanley",
-        "Mastercard",
-        "BNY",
-        "Goldman Sachs",
-        "Mahindra Finance"
-    ]
-
-    for company in companies:
-        if company.lower() in text.lower():
-            return company
-
-    return "Unknown"
-
-
-def extract_experience_type(text):
-
-    internship_keywords = [
-        "internship",
-        "summer internship",
-        "summer analyst",
-        "stipend"
-    ]
-
-    for keyword in internship_keywords:
-        if keyword.lower() in text.lower():
-            return "Internship"
-
-    return "Placement"
-
-
-def extract_role(text):
-
-    lines = text.split("\n")
-
-    for line in lines:
-
-        if "role:" in line.lower():
-            return line.split(":")[-1].strip()
-
-        if "job role:" in line.lower():
-            return line.split(":")[-1].strip()
-
-    return "Unknown"
-
-
-def extract_student_name(text):
-
-    lines = text.split("\n")
-
-    for i, line in enumerate(lines):
-
-        if "interview experience" in line.lower():
-
-            if i + 1 < len(lines):
-                return lines[i + 1].strip()
-
-    return "Unknown"
+def extract_text(pdf_path: str) -> dict:
+    """Returns {'text': str, 'pages': int, 'method': str}"""
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            pages = []
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text and len(text.strip()) > 50:
+                    pages.append(text)
+            
+            if pages:
+                return {
+                    "text": "\n\n--- PAGE BREAK ---\n\n".join(pages),
+                    "pages": len(pdf.pages),
+                    "method": "pdfplumber"
+                }
+    except Exception:
+        pass
+    
+    # Fallback: pymupdf
+    doc = fitz.open(pdf_path)
+    text = " ".join([page.get_text() for page in doc])
+    return {"text": text, "pages": len(doc), "method": "pymupdf"}

@@ -4,9 +4,7 @@ from datetime import datetime
 
 class Round(EmbeddedDocument):
     round_number = IntField()
-    round_type = StringField(choices=[
-        'coding', 'system_design', 'hr', 'managerial', 'technical', 'unknown'
-    ])
+    round_type = StringField(required=True)
     questions = ListField(StringField())
     tips = ListField(StringField())
     duration_minutes = IntField()

@@ -30,3 +30,21 @@ def extract_questions(text: str) -> list:
         text, re.IGNORECASE
     )
     return questions + task_patterns
+
+
+def parse_structure(text: str) -> dict:
+    """Entry point called by pipeline.py"""
+    return {
+        "company":        extract_company(text),
+        "role":           "Unknown",
+        "year":           None,
+        "difficulty":     "medium",
+        "outcome":        "unknown",
+        "rounds":         [
+            {"round_type": r, "questions": [], "tips": []}
+            for r in extract_rounds(text)
+        ],
+        "overall_tips":   [],
+        "technologies":   [],
+        "questions_flat": extract_questions(text)[:20]
+    }

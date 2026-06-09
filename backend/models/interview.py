@@ -1,36 +1,38 @@
-# models/interview.py — using mongoengine
+# models/interview.py
 from mongoengine import *
 from datetime import datetime
 
+
 class Round(EmbeddedDocument):
-    round_number = IntField()
-    round_type = StringField(required=True)
-    questions = ListField(StringField())
-    tips = ListField(StringField())
+    round_number     = IntField()
+    round_type       = StringField(required=True)   # no choices= so any string is accepted
+    questions        = ListField(StringField())
+    tips             = ListField(StringField())
     duration_minutes = IntField()
+
 
 class InterviewExperience(Document):
     # Source info
-    company = StringField(required=True, index=True)
-    role = StringField()
-    year = StringField()
-    
+    company  = StringField(required=True, index=True)
+    role     = StringField()
+    year     = StringField()
+
     # Outcome
     difficulty = StringField(choices=['easy', 'medium', 'hard'])
-    outcome = StringField(choices=['selected', 'rejected', 'unknown'])
-    
+    outcome    = StringField(choices=['selected', 'rejected', 'unknown'])
+
     # Content
-    rounds = EmbeddedDocumentListField(Round)
+    rounds       = EmbeddedDocumentListField(Round)
     overall_tips = ListField(StringField())
     technologies = ListField(StringField())
-    
+
     # Meta
-    source_file = StringField()         # original PDF filename
+    source_file       = StringField()   # original PDF filename — used as duplicate key
     extraction_method = StringField()   # 'rule_based' or 'ai'
-    raw_text = StringField()            # always store original
-    created_at = DateTimeField(default=datetime.utcnow)
-    
+    raw_text          = StringField()   # first 500 chars of extracted text
+    created_at        = DateTimeField(default=datetime.utcnow)
+
     meta = {
         'collection': 'interviews',
-        'indexes': ['company', 'role', 'technologies', 'year']
+        'indexes': ['company', 'role', 'technologies', 'year', 'source_file']
     }

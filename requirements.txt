@@ -27,3 +27,4 @@ google-auth-httplib2==0.2.0
 # ── Async Task Queue (optional for now, needed for scale) ────────
 celery==5.4.0
 redis==5.2.1
+

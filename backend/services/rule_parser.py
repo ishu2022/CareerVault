@@ -2,7 +2,7 @@
 import re
 
 # ──────────────────────────────────────────────
-# Company keywords (fallback when Drive path gives nothing)
+# Company keywords
 # ──────────────────────────────────────────────
 
 COMPANY_KEYWORDS = [
@@ -18,7 +18,7 @@ COMPANY_KEYWORDS = [
 ]
 
 # ──────────────────────────────────────────────
-# Round detection patterns
+# Round patterns + normaliser
 # ──────────────────────────────────────────────
 
 ROUND_PATTERNS = [
@@ -34,7 +34,6 @@ ROUND_PATTERNS = [
     r'written\s*test',
 ]
 
-# Maps raw regex match → clean round_type value
 ROUND_TYPE_MAP = {
     'coding':           'coding',
     'coding round':     'coding',
@@ -61,17 +60,10 @@ ROUND_TYPE_MAP = {
 }
 
 
-# ──────────────────────────────────────────────
-# Internal helpers
-# ──────────────────────────────────────────────
-
 def _normalise_round_type(raw: str) -> str:
-    """Map any raw regex match to a clean round_type string."""
     low = raw.lower().strip()
-    # Direct match
     if low in ROUND_TYPE_MAP:
         return ROUND_TYPE_MAP[low]
-    # Partial / substring match
     for key, val in ROUND_TYPE_MAP.items():
         if key in low:
             return val
@@ -79,57 +71,125 @@ def _normalise_round_type(raw: str) -> str:
 
 
 # ──────────────────────────────────────────────
-# Extractors
+# Question extraction
+# ──────────────────────────────────────────────
+
+def extract_questions(text: str) -> list:
+    """
+    Extract all questions from the full text.
+    Returns a flat deduplicated list of strings.
+    """
+    found = []
+
+    # Pattern 1: sentences ending with ?
+    direct = re.findall(r'[A-Z][^.!?\n]{10,}[?]', text)
+    found.extend(direct)
+
+    # Pattern 2: "asked me to implement X"
+    tasks = re.findall(
+        r'(?:asked|told)\s+(?:me\s+)?(?:to\s+)([^.!\n]{10,})',
+        text, re.IGNORECASE
+    )
+    found.extend(tasks)
+
+    # Pattern 3: "Q: ..." or "Question: ..."
+    labeled = re.findall(
+        r'(?:Q\s*[:.)]\s*|Question\s*[:.)]\s*)([^\n]{10,})',
+        text, re.IGNORECASE
+    )
+    found.extend(labeled)
+
+    # Pattern 4: "implement/design/write/find/explain X"
+    imperatives = re.findall(
+        r'(?:implement|design|write|find|explain|describe|solve|given)\s+([^.!\n?]{15,})',
+        text, re.IGNORECASE
+    )
+    found.extend(imperatives)
+
+    # Deduplicate preserving order
+    seen   = set()
+    unique = []
+    for q in found:
+        q = q.strip()
+        if q and len(q) > 10 and q not in seen:
+            seen.add(q)
+            unique.append(q)
+
+    return unique[:50]  # cap at 50
+
+
+# ──────────────────────────────────────────────
+# Round extraction — WITH questions attached
+# ──────────────────────────────────────────────
+
+def extract_rounds_with_questions(text: str) -> list:
+    """
+    THE KEY FUNCTION.
+
+    Finds every round mention in the text, then extracts
+    the questions that appear in the text segment AFTER
+    that round heading (up to the next round heading).
+
+    Returns:
+    [
+        {
+            'round_type': 'coding',
+            'questions':  ['What is BST?', 'Implement LRU cache'],
+            'tips':       []
+        },
+        ...
+    ]
+    """
+    # ── Step 1: Find all round positions in text ─────────────────
+    combined_pattern = '|'.join(f'(?:{p})' for p in ROUND_PATTERNS)
+    round_matches = list(re.finditer(combined_pattern, text, re.IGNORECASE))
+
+    if not round_matches:
+        # No rounds detected — put all questions in one 'unknown' round
+        all_questions = extract_questions(text)
+        if all_questions:
+            return [{'round_type': 'unknown', 'questions': all_questions, 'tips': []}]
+        return []
+
+    # ── Step 2: Slice text per round, extract questions per slice ─
+    rounds   = []
+    seen_types = set()
+
+    for idx, match in enumerate(round_matches):
+        round_type = _normalise_round_type(match.group(0))
+
+        # Skip duplicate round types
+        if round_type in seen_types:
+            continue
+        seen_types.add(round_type)
+
+        # Text segment: from this round heading to the next
+        start = match.end()
+        end   = round_matches[idx + 1].start() if idx + 1 < len(round_matches) else len(text)
+        segment = text[start:end]
+
+        # Extract questions only from this segment
+        segment_questions = extract_questions(segment)
+
+        rounds.append({
+            'round_type': round_type,
+            'questions':  segment_questions,
+            'tips':       []
+        })
+
+    return rounds
+
+
+# ──────────────────────────────────────────────
+# Remaining extractors
 # ──────────────────────────────────────────────
 
 def extract_company(text: str) -> str:
-    """Fallback company detection from text content."""
     text_lower = text.lower()
     for company in COMPANY_KEYWORDS:
         if company in text_lower:
             return ' '.join(w.capitalize() for w in company.split())
     return 'Unknown'
-
-
-def extract_rounds(text: str) -> list:
-    """
-    Returns a list of clean round dicts:
-    [{'round_type': 'coding', 'questions': [], 'tips': []}]
-    Every round_type is normalised — no raw regex strings.
-    """
-    seen  = set()
-    found = []
-    for pattern in ROUND_PATTERNS:
-        for match in re.finditer(pattern, text, re.IGNORECASE):
-            norm_type = _normalise_round_type(match.group(0))
-            if norm_type not in seen:
-                seen.add(norm_type)
-                found.append({
-                    'round_type': norm_type,
-                    'questions':  [],
-                    'tips':       []
-                })
-    return found
-
-
-def extract_questions(text: str) -> list:
-    """Extract question strings from interview text."""
-    # Direct questions ending with ?
-    questions = re.findall(r'[A-Z][^.!?\n]{10,}[?]', text)
-    # "asked me to X" patterns
-    tasks = re.findall(
-        r'(?:asked|told)\s+(?:me\s+)?(?:to\s+)([^.!\n]{10,})',
-        text, re.IGNORECASE
-    )
-    combined = questions + tasks
-    seen   = set()
-    unique = []
-    for q in combined:
-        q = q.strip()
-        if q and q not in seen:
-            seen.add(q)
-            unique.append(q)
-    return unique[:30]
 
 
 def extract_difficulty(text: str) -> str:
@@ -153,22 +213,23 @@ def extract_outcome(text: str) -> str:
 
 
 # ──────────────────────────────────────────────
-# Main entry point — called by pipeline.py
+# Main entry point
 # ──────────────────────────────────────────────
 
 def parse_structure(text: str) -> dict:
     """
-    Returns a clean dict ready for InterviewExperience model.
+    Called by pipeline.py.
     company and year are overridden by Drive metadata in pipeline.py.
     """
+    rounds = extract_rounds_with_questions(text)
+
     return {
-        'company':        extract_company(text),
-        'role':           'Unknown',
-        'year':           None,
-        'difficulty':     extract_difficulty(text),
-        'outcome':        extract_outcome(text),
-        'rounds':         extract_rounds(text),
-        'overall_tips':   [],
-        'technologies':   [],
-        'questions_flat': extract_questions(text),
+        'company':      extract_company(text),
+        'role':         'Unknown',
+        'year':         None,
+        'difficulty':   extract_difficulty(text),
+        'outcome':      extract_outcome(text),
+        'rounds':       rounds,
+        'overall_tips': [],
+        'technologies': [],
     }

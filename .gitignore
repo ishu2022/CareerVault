@@ -1,105 +1,38 @@
-# ========================
 # Node
-# ========================
 node_modules/
 
-# ========================
 # Python
-# ========================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# virtual env
+# Virtual environments
 backend/venv/
 venv/
 env/
 
-# ========================
-# Environment Variables
-# ========================
+# Environment variables
 .env
 backend/.env
 
-# ========================
-# Secrets & Config (IMPORTANT)
-# ========================
+# Secrets
 secrets/
-config/
-*.json
+backend/secrets/
+service_account.json
 
-# ========================
 # Uploads
-# ========================
 backend/uploads/
 uploads/
 
-# ========================
-# Tests (optional cleanup)
-# ========================
+# Test/debug files (optional)
 test_*.py
+debug.py
 
-# ========================
-# OS Files
-# ========================
+# OS files
 .DS_Store
 Thumbs.db
 
-# ========================
 # IDE
-# ========================
-.vscode/
-.idea/# ========================
-# Node
-# ========================
-node_modules/
-
-# ========================
-# Python
-# ========================
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# virtual env
-backend/venv/
-venv/
-env/
-
-# ========================
-# Environment Variables
-# ========================
-.env
-backend/.env
-
-# ========================
-# Secrets & Config (IMPORTANT)
-# ========================
-secrets/
-config/
-*.json
-
-# ========================
-# Uploads
-# ========================
-backend/uploads/
-uploads/
-
-# ========================
-# Tests (optional cleanup)
-# ========================
-test_*.py
-
-# ========================
-# OS Files
-# ========================
-.DS_Store
-Thumbs.db
-
-# ========================
-# IDE
-# ========================
 .vscode/
 .idea/

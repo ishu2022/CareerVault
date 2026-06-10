@@ -2,21 +2,19 @@
 import os
 from services.pdf_extractor import extract_text
 from services.rule_parser import parse_structure
+from services.company_normalizer import normalize_company_name   # ← ADD THIS
 
 
 def run_pipeline(
     pdf_path:      str,
-    original_name: str  = "",
-    company_hint:  str  = None,
-    year_hint:     str  = None,
+    original_name: str = "",
+    company_hint:  str = None,
+    year_hint:     str = None,
 ) -> dict:
     """
     Full pipeline: PDF file → MongoDB document.
-
-    Returns a result dict:
-      { id, company, year, rounds, source_file, skipped, error }
-
-    Never raises — all exceptions are caught and returned in 'error'.
+    Returns { id, company, year, rounds, source_file, skipped, error }
+    Never raises — all exceptions caught and returned in 'error'.
     """
     name = original_name or os.path.basename(pdf_path)
 
@@ -59,13 +57,24 @@ def run_pipeline(
         print(f"[pipeline] Parse failed: {name} — {e}")
         return {'source_file': name, 'skipped': False, 'error': f"parsing: {e}"}
 
-    # ── Step 3: Override with Drive metadata (authoritative) ─────
+    # ── Step 3: Override with Drive metadata then NORMALISE ──────
+    #
+    # Priority: company_hint from Drive folder path (most reliable)
+    # Fallback: company from rule_parser text scan
+    # Then ALWAYS normalise whichever one we end up with.
+    #
     if company_hint and company_hint.strip() and company_hint != 'Unknown':
-        parsed['company'] = company_hint.strip()
+        raw_company = company_hint.strip()
+    else:
+        raw_company = parsed.get('company', 'Unknown')
+
+    # ← THIS IS THE LINE THAT WAS MISSING
+    parsed['company'] = normalize_company_name(raw_company)
+
     if year_hint:
         parsed['year'] = str(year_hint)
 
-    print(f"[pipeline] Company: {parsed['company']} | Year: {parsed['year']} | Rounds: {len(parsed['rounds'])}")
+    print(f"[pipeline] Company: {raw_company!r} → {parsed['company']!r} | Year: {parsed.get('year')} | Rounds: {len(parsed['rounds'])}")
 
     # ── Step 4: Save to MongoDB ──────────────────────────────────
     try:

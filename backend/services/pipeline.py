@@ -1,8 +1,7 @@
-# services/pipeline.py
 import os
 from services.pdf_extractor import extract_text
 from services.rule_parser import parse_structure
-from services.company_normalizer import normalize_company_name   # ← ADD THIS
+from services.company_normalizer import normalize_company_name
 
 
 def run_pipeline(
@@ -10,6 +9,7 @@ def run_pipeline(
     original_name: str = "",
     company_hint:  str = None,
     year_hint:     str = None,
+    folder_path:   str = "",
 ) -> dict:
     """
     Full pipeline: PDF file → MongoDB document.
@@ -18,7 +18,6 @@ def run_pipeline(
     """
     name = original_name or os.path.basename(pdf_path)
 
-    # ── Duplicate guard ──────────────────────────────────────────
     try:
         from models.interview import InterviewExperience
         existing = InterviewExperience.objects(source_file=name).first()
@@ -36,7 +35,6 @@ def run_pipeline(
     except Exception as e:
         print(f"[pipeline] Warning: DB duplicate check failed ({e}), continuing")
 
-    # ── Step 1: PDF → raw text ───────────────────────────────────
     try:
         extracted = extract_text(pdf_path)
         raw_text  = extracted['text']
@@ -50,25 +48,17 @@ def run_pipeline(
         print(f"[pipeline] Too little text, skipping: {name}")
         return {'source_file': name, 'skipped': True, 'error': "insufficient text"}
 
-    # ── Step 2: Text → structured dict ──────────────────────────
     try:
-        parsed = parse_structure(raw_text)
+        parsed = parse_structure(raw_text, filename=name, folder_path=folder_path)
     except Exception as e:
         print(f"[pipeline] Parse failed: {name} — {e}")
         return {'source_file': name, 'skipped': False, 'error': f"parsing: {e}"}
 
-    # ── Step 3: Override with Drive metadata then NORMALISE ──────
-    #
-    # Priority: company_hint from Drive folder path (most reliable)
-    # Fallback: company from rule_parser text scan
-    # Then ALWAYS normalise whichever one we end up with.
-    #
     if company_hint and company_hint.strip() and company_hint != 'Unknown':
         raw_company = company_hint.strip()
     else:
         raw_company = parsed.get('company', 'Unknown')
 
-    # ← THIS IS THE LINE THAT WAS MISSING
     parsed['company'] = normalize_company_name(raw_company)
 
     if year_hint:
@@ -76,7 +66,6 @@ def run_pipeline(
 
     print(f"[pipeline] Company: {raw_company!r} → {parsed['company']!r} | Year: {parsed.get('year')} | Rounds: {len(parsed['rounds'])}")
 
-    # ── Step 4: Save to MongoDB ──────────────────────────────────
     try:
         from models.interview import InterviewExperience, Round
 

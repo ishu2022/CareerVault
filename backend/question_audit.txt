@@ -1,0 +1,820 @@
+
+
+========== BNY Mellon ==========
+[hr] a binary string servers where:
+[hr] the number of distinct possible counts of working servers after
+[hr] the largest possible team size we can form, such that for each position
+[hr] are a list of integers serverProp
+[hr] the size of the cluster each server belongs to
+[hr] n intervals with:
+[hr] the maximum size of a subset of intervals such that all of them overlap
+[unknown] What are classes?
+[unknown] What is a real-life example of a class?
+[unknown] What is a real-life example of inheritance?
+[unknown] sit and then asked me to
+[unknown] write a code example
+[unknown] So while I was talking about inheritance, he interrupted again and
+[unknown] DSA problems and participate
+[unknown] the code for quicksort on paper
+[unknown] any mistake, so I
+[unknown] HeaskedmeabouttheACIDpropertiesinDBMS,andIexplainedthemwithreal-life
+[unknown] write code for Merge Sort and explain it as I wrote
+[unknown] solve the relation using the Master Theorem and
+[unknown] perform as many different
+[unknown] write code for
+[unknown] code for Merge Sort and explain it as I wrote
+[unknown] the relation using the Master Theorem and
+[unknown] all three cases
+[hr] explain OOPs
+[hr] explain the difference between abstraction and encapsulation
+[hr] write down an example in code about abstraction
+[hr] write the pseudo code and explain it with
+[hr] prove if the time complexity formula is correct by giving the same for
+[hr] convert it into postfix and also give the code for it
+[hr] everyone , DSA included sorting techniques, questions related to
+[hr] implement some time scheduling algorithm
+[hr] what it really means and then move
+[hr] the difference between abstraction and encapsulation
+[hr] down an example in code about abstraction
+[hr] it using access specifiers by taking the
+[hr] for abstraction
+[hr] to which I replied merge sort
+[hr] the pseudo code and explain it with
+[hr] it all together and started doing something on
+[hr] the pseudo code but did not do a dry run first on my own to
+[hr] the code when I was
+[hr] some time scheduling algorithm
+[hr] both the rounds of HILTI on-campus drive
+[coding] a binary 2D array of size NxM, each row of the matrix has
+[coding] this completely
+[coding] all the compromised array
+[coding] one medium and one easy question completely and
+[technical] Tell me about yourself ?
+[technical] Then he asked which all programming languages I know?
+[technical] I know about OOPS?
+[technical] Then he asked, what are the different concepts in OOPS?
+[technical] He asked me whether I am familiar with Python or not?
+[technical] He asked me whether I know List Comprehension or not?
+[technical] rank myself in each language based on Proficiency
+[technical] write the code
+[technical] explain Polymorphism
+[technical] write code and tell the output
+[technical] write all the data structures I am familiar with
+[technical] explain mutable and immutable data structures
+[technical] write code on paper
+[technical] write code for declaring them and iterating through them
+[technical] write a class in Python
+[technical] with examples and by relating
+[technical] code and tell the output
+[technical] all the data structures I am familiar with
+[technical] mutable and immutable data structures
+[technical] code for declaring them and iterating through them
+[technical] a class in Python
+[hr] Again the most famous question, “Tell me about yourself?
+[hr] Why BNY Mellon?
+[hr] Why Software Engineering being from an Electronics Background?
+[hr] Computer Science in other colleges in Mumbai?
+[hr] Now he asked about my family background?
+[hr] talk about one recent failure
+[hr] tell one situation where I struggled a lot and how I
+[hr] justify the
+[hr] 7. Why did you choose Electronics Engineering at VJTI, instead of taking
+[coding] only one difficult question and the other question solved
+[coding] some of the questions in this site https://www
+[coding] an array of array in which each array is of form
+[coding] how many times a user logged in on a particular day
+[coding] a binary 2D array of size NxM, each row of the matrix had some value x
+[coding] a list of employees, where each is assigned a numeric score, and there are
+[coding] your whole resume
+[technical] 2 arrays, you need to concatenate and sort the arrays
+[technical] queue, give pseudocode for the same
+[technical] an array, find the max element
+[technical] what is the object, datatype, etc
+[technical] classes in python, application based questions on scope of variables
+[technical] inheritance with an example
+[hr] his satisfaction from
+[coding] Round 02: Technical Interview 01 (A
+[coding] only 4 test cases of one question
+[unknown] demonstrate the run time
+[unknown] predict the output or to tell
+[unknown] design a class for that
+[unknown] write down the code on a paper
+[unknown] write a code to sort that array
+[unknown] the pillars of OOPS
+[unknown] a class for that
+[unknown] the working of stack and queue with complexities and asked me different
+[unknown] down the code on a paper
+[unknown] a code to sort that array
+[coding] with the arrays num_servers,money,upgrade and sell ,each with n integers
+[coding] this question completely and it was easy though
+[coding] a list of employees, where each is assigned a numeric score, and
+[coding] this completely using the priority queue
+[coding] 1. Binary Storage -
+[coding] a binary 2D array of size NxM, each row of the matrix had
+[coding] the arrays num_servers, money, upgrade, and sell, each with n integers,
+[coding] this problem completely
+[coding] a list of employees where each is assigned a numeric evaluation score, use the
+[coding] the sum of scores of selected employees
+[coding] this questions using multiple approaches but the Multiset approach
+[technical] Please introduce yourself?
+[technical] Which sorting algorithms do you know?
+[technical] Which is better?
+[technical] compare quick sort and merge sort and also mention the
+[technical] complete the
+[technical] the code on paper)
+[technical] all the functions like push, pop, top, size, etc
+[technical] on the compiler
+[coding] 2. Binary Storage -
+[coding] time later, to reiterate on this question
+[coding] a list of employees, where each is assigned a
+[technical] explain the principles of OOPS, and I asked a clarifying
+[technical] the principles of OOPS, and I asked a clarifying
+
+
+========== Bank of America ==========
+[unknown] I thought the brought force would
+[unknown] an array, find and print all distinct pairs that sum to a given
+[hr] introduce myself and
+[coding] interviews of Citi Bank and Hilti
+[unknown] My group was given the topic: “Cashless Economy - Success or Failure?
+[unknown] So, I asked them 'Can I start by telling you about myself?
+[unknown] Aaryan… Why did you leave IIT and come to VJTI?
+[unknown] What do you know of Project Management?
+[unknown] summarize the contents
+[unknown] your resume such that it drives the
+[unknown] the topic: “Cashless Economy - Success or Failure
+[unknown] What are aggregate functions ?
+[unknown] What are triggers ?
+[unknown] Any questions ?
+[unknown] explain binary search and compare it to
+[unknown] binary search and compare it to
+[unknown] abstraction in a database
+[unknown] the types of indexing
+
+
+========== Citi ==========
+[hr] me were as follows -
+[hr] You are given N flowers and their stem
+[hr] an algorithm to find the Kth smallest stock price
+[hr] N flowers and their stem
+[unknown] Aishwarya,how are you?
+[hr] fill the application for the internship, we had to mention the role we
+[hr] fill in either of the two roles ICG and EIOT in
+[hr] string and output the count of the
+[hr] the total number of orders placed (say N), a list of N order numbers
+[hr] and print the first meat pizza
+[coding] in instructions that only
+[coding] in the description of
+
+
+========== D.E. Shaw ==========
+[system_design] Coder Army LLD playlist
+[system_design] problem in an interview
+[system_design] patterns, I covered the following - Singleton, Observer,
+[unknown] an array, make all elements equal using the following operations:
+[system_design] : Linear Sweep
+[system_design] a team class with hierarchical structure:
+[system_design] two operations:
+[system_design] n queries in format (L, R, C), increment the range L to R by C
+[system_design] Least Recently Used (LRU) cache
+[system_design] system for streaming to n clients
+[coding] Why it does not support?
+[coding] n servers such that the ith server is active in
+[coding] k tasks such that tasks[i]
+[coding] the minimum waiting time
+[coding] an integer k, you start with an empty string and you can
+[coding] an array of queries of size q, for each query you have to
+[coding] a matrix of size 10 * 10 where the elements can
+[coding] a number n, now you need
+[coding] the sum of elements of matrix such that their indices
+[coding] two vectors containing the velocity and position of the racers
+[coding] the solution, I said I am comfortable
+[coding] the approach well, write, if possible, on
+[coding] a stack that would give the max element in O (1) time
+[coding] a table containing emp_id and emp_name, another table
+[coding] a SQL query to print the table
+[unknown] He also asked me; did you face any challenge while working in teams?
+[unknown] it, what I would use
+
+
+========== Deutsche Bank ==========
+[technical] What is normalization?
+[technical] What is the need of it?
+[technical] What work did you do in your internship?
+[technical] write a code for quick
+[technical] explain my projects
+[technical] a code for quick
+[technical] each property with
+[coding] Whataretheallsubjectsyouhavecoveredsofar?
+[coding] Whichwasyourfavoritesubjectsofar?
+[coding] Howchatgptworks?
+[coding] WhatisthedifferencebetweenLinuxandWindows?
+[coding] Whatisdatastructureandtypesofdatastructures?
+[coding] WhichdatabasedoyoupreferSQLorno-SQL?
+[coding] WhatdifficultiesdoyoufacewhileworkinginDB?
+[coding] WhatistheworkcultureofDBandtechstackused?
+[coding] anythingIwasfluentwithonthewhiteboard
+[technical] Whichismyfavoritesubject?
+[technical] HowdoesitfeeltoworkinDB?
+[technical] OnwhichtechnologyisDBfocused?
+[technical] WhatisyourroleinDB?
+[technical] Howdoyoumanageyourworklifeandpersonallife?
+[technical] Howwasyourdaytillnow?
+[technical] Areyoutired?
+[technical] Whatareyourhobbiesandwhatdoyoudootherthanstudies?
+[technical] WhatisAWSandhowdoyouuseitinyourprojects?
+[technical] Howdoesitfeeltoworkwithateam?
+[technical] Willyoudothatwork?
+[technical] WhichdatabaseisgoodMongoDBorMySQL?
+[technical] Areyoucomfortablewithrelocation?
+[technical] Haveyouanyplansforhighereducation?
+[technical] HowDBisbestforfreshers?
+[technical] HowwasyourexperiencetillnowinDB?
+[technical] WhatissuesdoyoufacewhilestartingacareerinDB?
+[hr] WhatarethevaluesofDB?
+[hr] Wheredoyouseeyourselfin5years?
+[hr] HowdoesitfeeltoworkinDBanditsworkingenvironment?
+[hr] Whyitisagoodcompanytostartacareerforfreshers?
+[hr] OnegoodandbadthingaboutDB?
+[hr] WhatissuesdoshefacewhilejoiningDB?
+[coding] What is React?
+[coding] How does React internally work?
+[coding] What is NodeJs, Express?
+[coding] What is SQL?
+[coding] What are joins and different types of joins?
+[coding] What is RDBMS?
+[coding] What are keys and different types of keys?
+[coding] What is a friend function?
+[coding] explain and code merge
+[coding] explain my project
+[coding] Remove duplicates from string. I had done using maps and she
+[coding] a query string and an array of strings
+[coding] the closest string to the given query string
+[coding] in the array with respect to the
+[coding] an array of web pages title and array of
+[coding] all three questions and a total of 41 students
+[coding] four pillars, give real life
+[coding] Pure virtual function and abstract class in c++
+[coding] where I was needed to give the
+[coding] process states in OS
+[unknown] How will you handle such a situation?
+[unknown] Why bank over Product based companies?
+[unknown] explain the group project and asked the
+[unknown] the group project and asked the
+[unknown] the queries on the table she had with her
+[hr] He asked if I had any questions?
+[hr] explain my all projects and my contribution in
+[hr] my all projects and my contribution in
+[technical] TPO seminar hall, so how will we achieve this?
+[technical] MB, so how will OS run it simultaneously?
+[technical] tell me about myself till my 10th standard,
+[technical] exclude the academic part
+[technical] elaborate on my projects
+[technical] write a code on any application (but it should be valuable and like
+[technical] arrange them in
+[technical] rank the storage devices in terms of speed
+[technical] be the interviewer and ask him a technical question
+[technical] I was quite
+[technical] So I told him the scenario of infinite loop, how the stack space will
+[technical] that people have
+[technical] a code on any application (but it should be valuable and like
+[technical] a scenario where deadlock
+[system_design] it to others is a different
+[system_design] the topic or problem (brute ->better ->
+[coding] What are interfaces and abstract classes?
+[coding] Can abstract classes implement interfaces?
+[coding] What is inheritance?
+[coding] What are the various types of inheritance?
+[coding] What is method overloading and method overriding?
+[coding] a function to calculate the maximum total number of
+[coding] query string using the Levenshtein distance
+[coding] a function that takes a
+[coding] an array of strings and an array of corresponding numbers
+[coding] a Java function that takes two lists as inputs: a list of
+[coding] each one of them with a real life example
+[coding] a SQL query to retrieve the list of students along with their
+[coding] code for Binary search and perform a dry run
+[unknown] AND IF NOT why?
+[unknown] What are the divide and conquer algorithms?
+[unknown] What is BST, and how does it work?
+[unknown] What is the Round Robin algorithm?
+[unknown] What is a RAD model?
+[unknown] What is AGILE?
+[unknown] What if we select you?
+[unknown] Who is the worst professor in your department?
+[unknown] explain the recursive process and
+[unknown] draw a linked list structure
+[unknown] give a brief introduction
+[unknown] the recursive process and
+[unknown] using a real life
+[coding] string to the query string
+[coding] in the original array
+[coding] a custom comparator for sorting these string
+[coding] a custom sorter
+[coding] draw the architecture between end user and os (the kernel
+[coding] list all the memory units I knew in ascending order
+[coding] order them ( RAM, CD, Hard disk, cache
+[coding] explain what virtual memory is
+[coding] write any code in any language just it should have a practical
+[coding] two resources with powers A and B respectively
+[coding] integers A and B
+[coding] a dictionary consisting of N words and a query word S
+[coding] N webpage titles and corresponding arrays that constrain the
+[coding] what virtual memory is
+[coding] any code in any language just it should have a practical
+[unknown] What is a binary tree?
+[unknown] What is an abstract class?
+[unknown] Why DB, if you get PPO from SAP Labs would you accept (I said no), why not?
+[unknown] Where do you see yourself in 5 years?
+[unknown] show each pillar implementation for
+[unknown] a code to reverse a string
+[unknown] sql query to create a table of given specifications (with distinct, primary
+[unknown] your approach and do not stay
+[technical] WhatdoyouunderstandfromDatastructuresandAlgorithms?
+[technical] SheaskedmeifiknowA*algorithm?
+[technical] WhatisDP(DynamicProgramming)?
+[technical] Whydoweuseit?
+[technical] HowtoimplementDP?
+[technical] SheaskedifIknewwhatanAPI is?
+[technical] WhatisVirtualmemory?
+[technical] HowisherexperiencewiththeDB?
+[technical] Whatistherotationaltrainingprogram?
+[technical] WhatisVirtualmemory? Iexplained the
+[hr] If a table is empty then what will COUNT * query return - 0 or NULL?
+[hr] Binary tree or binary search tree?
+[hr] Do you have any questions for me?
+[hr] What more features can I add to the project?
+[hr] What is Node and Express?
+[hr] What are APIs ?
+[hr] What are synchronous and asynchronous calls?
+[hr] What is middleware?
+[hr] Where have I used it in my project?
+[hr] What is Redux?
+[hr] What are your strengths and weaknesses?
+[hr] What will you do?
+[hr] How will you get your work done?
+[hr] How will you handle days with extra workload?
+[hr] Any questions for me?
+[hr] explain in detail how I
+[hr] start right from what are node modules and packages
+[hr] a list of strings and a query string, we have to find the string from the list
+[hr] a string array of webpage titles and an integer array of number of
+[hr] ACID Properties
+[hr] a for loop code in a
+[hr] various git commands and then a follow up question was:
+[hr] your hackathon project and why have we used the mentioned tech stack
+[hr] the recursion tree for printing factorial of a number
+[hr] your personal (MERN) project
+[hr] your project using STAR
+[hr] in detail how I
+[hr] the MERN stack to a complete beginner how would you
+[hr] Polymorphism and its types
+[hr] a C++ code to show runtime
+[hr] code for the optimized solution to this question and its time complexity:
+[hr] the pseudo code for LRU Cache and dry run
+[unknown] Whichlanguageareyoumostcomfortablewith?
+[unknown] Thiscamewithafollow-upquestiononwhyPythonandnotJava/C++?
+[unknown] Anotherfollow-upquestionwashowtoimplementOOPsinPython?
+[unknown] Inheritance?
+[unknown] WhatisyourfavouriteDataStructure?
+[unknown] AreyoucomfortablewithDBMS?
+[unknown] WhatareACIDproperties?
+[unknown] AreyoucomfortablewithComputerNetworkconcepts?
+[unknown] AreyoucomfortablewithOSconcepts?
+[unknown] Anyquestionsyouhaveforme?
+[hr] 2 resources with powers A and B respectively
+[hr] N web page titles and corresponding arrays that contain the number of backlinks for each
+[hr] all the 3 questions and pass all the testcases in them within
+[hr] 1. Power Limit : Given two variables, A and B, representing power levels, the task is
+[hr] two variables, A and B, representing power levels, the task is
+[coding] Backlink sorting
+[coding] resources A and B
+[coding] N web page titles and corresponding arrays that contain the number of backlinks for
+[coding] all three questions before time
+[unknown] Whatareinterfacesandabstractclasses?
+[unknown] Canabstractclassesimplementinterfaces?
+[unknown] Whatisinheritance?
+[unknown] Whatarethevarioustypesofinheritance?
+[unknown] Whatismethodoverloadingandmethodoverriding?
+[technical] What is deadlock?
+[technical] How data consistency is maintained in Transactions in DBMS?
+[technical] Any questions to interviewer?
+[technical] I asked her how is her experience in DB so far?
+[technical] PreOrder and Inorder traversal
+[unknown] What does your father do?
+[unknown] Why didn't you get a good on campus internship?
+[unknown] Tell me about the professor whom you hate the most?
+[unknown] What is the reason of hate?
+[unknown] In which tech stack, would you like you like to work in future?
+[unknown] What are your plans regarding higher studies?
+[unknown] What work you did in your internship?
+[unknown] What dif(cid:976)iculties you faced during the internship and how did you tackle them?
+[unknown] Who is the president of India?
+[unknown] What was the highest score achieved by Sachin Tendulkar in 2003?
+[unknown] Then he asked which sport do you like and some questions related to them?
+[unknown] a string, (cid:976)ind the LONGEST PALINDROMIC SUBSTRING out of
+[unknown] the code on paper, without discussing the approach in 7 minutes only
+[hr] What is your native place?
+[hr] What is your father's profession?
+[hr] What were the dif(cid:976)iculties faced during internship?
+[hr] How did you tackle them?
+[hr] In which tech stack you would like to work?
+[hr] If you are allowed to change the UI of WhatsApp, then what changes will you do?
+[hr] What are the memories that you have made in college?
+[hr] Any plan for higher studies?
+[hr] Any question to me?
+[hr] concepts to your friends and
+[hr] DSA solutions in an
+[hr] project, how to give introduction, etc from other
+[unknown] Whatisrecursion?
+[unknown] Howisthedataactuallystoredinacomputer?
+[unknown] SupposeIgiveyou50lakhrsrightnowhowwouldyoudevelopyourwebsite?
+[unknown] Heaskedmeaboutmyinternshipwork.
+[technical] 1st and last occurrence of target
+[technical] loop in linked list (My answer- 1st I gave approach using another
+[technical] a sorted arrays having some 0’s , rearrange the array to store all 0’s
+[technical] exception handling, how it is used in C++, what are different exceptions
+[technical] a situation, where a person working under me do some mistake, how I’ll
+
+
+========== Dolat Capital ==========
+[unknown] Whichfuncwillgetcalledwhen?
+[unknown] Iexplainthekhansalgorithmandwrittenthecode.
+[hr] QhwUBdvhk/edit?
+[coding] an integer number ‘n’ as an input and we were asked to find the
+[technical] There was an immediate follow up question ‘Why a 7 and not a 9?
+[technical] Questions like ‘What is memory leak?
+[technical] introduce myself followed by the question ‘How much would you rate
+[technical] give an explanation for it
+[technical] explain compile time polymorphism, runtime polymorphism with examples
+[technical] write an example code
+[technical] explain the ‘static’ keyword
+[technical] explain the difference between
+[technical] write a code to merge
+[technical] add them and return the
+[technical] write a code which
+[technical] write a code which printed the following ‘*’ pattern:
+[technical] compile time polymorphism, runtime polymorphism with examples
+[technical] an example code
+[technical] inheritance, its types,
+[technical] the ‘static’ keyword
+[technical] the malloc keyword’, ‘What
+[technical] the ‘malloc’ keyword as it had been a
+[technical] the difference between
+[technical] a code to merge
+[technical] a code which printed the following ‘*’ pattern:
+[hr] Why is C++ your primary language?
+[hr] What are your plans for higher education?
+[hr] Why did you choose this field if your father is in the field of finance?
+[hr] Have you applied for any other companies other than Dolat Capital?
+[coding] Introduce Yourself ?
+[coding] Which func will get called when?
+[coding] Then which all constructors get called child obj is created ?
+[coding] How to initialise parent if parent has parameterised constructor via child?
+[coding] What are diff types of data structures?
+[coding] Why stack /queue are used , if arrays can be used?
+[coding] And only that is given , how would you delete it?
+[coding] solve it if the pointer was of last node only , we had some
+[coding] explain Time complexity in detail
+[coding] an integer array A and an integer K ,
+[coding] a billing system for a Parking lot of Commercial building
+[coding] number of elements is in Q Union P
+[coding] all (Encapsulation, Abstraction, Polymorphism, Inheritance)
+[coding] inheritance with code and example
+[coding] each and Code on paper )
+[coding] stack and queue,
+[coding] a singly LinkedList and a pointer to a node (which is to be deleted)
+[coding] , how would you delete it
+[coding] it if the pointer was of last node only , we had some
+[coding] a sorted array 1, 5, 7, 10, 11 -> return the indices of two numbers that add up
+[coding] Time complexity in detail
+[hr] Why not the current internship company’s PPO?
+[hr] them just to check their experiences
+[unknown] Alltestcasespassed.
+[unknown] Iwilltrytoprovideasmanydetailsas
+[unknown] 4. NextGreaterElement Difficulty:Easy-Medium
+[unknown] codesforeachofthemwhereverpossible
+
+
+========== Goldman Sachs ==========
+[technical] I said, “Yeah, something close to O(log N)?
+[technical] find the floor of a
+[technical] the question here
+[technical] the number of nodes present in the first
+[technical] what x would be, and I figured it would be the height of the tree so log N
+[hr] brief her about my project
+[unknown] of an application
+[unknown] round also gave the DSA round
+[unknown] and memorise your HR questions
+[hr] HowdidyoucomeintoVJTI?
+[hr] Howwasyourjourney?
+[hr] Whatisyourfavouritesubject?
+[hr] HowwillyouimplementDSAinarealworldapplication?
+[unknown] Whatmadeitstandoutthemosttoyou?
+[unknown] Ifstr[i]==‘X’filltheposition
+
+
+========== Google ==========
+[system_design] Why do you want to join our company?
+[system_design] What do you know about our company?
+[system_design] fill a registration form
+[system_design] information about the company from their LinkedIn, google,
+[unknown] arbitrary strings
+[unknown] a 2D Matix (MxN) with each cell labelled serially ie
+
+
+========== Hilti ==========
+[coding] carry 2 copies of resume
+[coding] all occurrences of the pattern
+[coding] the math questions
+[coding] Output Specification:
+[coding] them fast, as there were 30 questions to complete in 30
+[coding] a list of numbers indicating the window number and a number indicating
+[coding] the Windows screen switch shortcut (WIN + TAB), we need
+[coding] 1 Necessary case and 1 Edge case
+[technical] What is the difference between Abstraction and Encapsulation?
+[technical] Why is Abstraction important?
+[technical] join the Microsoft Meet where to my surprise I was greeted by two
+[technical] describe a little about all of them that I had in my resume
+[technical] They gave me a puzzle to solve, 10 balls in 5 lines. This is a pretty classic puzzle
+[technical] a little about all of them that I had in my resume
+[technical] the 4 pillars of OOPs (I took the example of
+
+
+========== Jpmorgan Chase ==========
+[unknown] What steps have you taken to learn about this program?
+[unknown] record video responses to 2
+[unknown] your tasks and the outcome
+[unknown] 30 seconds to prepare your response
+[coding] an array server and an integer expected_load, find the minimum number
+[unknown] What was the outcome ?
+[unknown] When was your last successful presentation or speech?
+[unknown] What made it successful?
+[unknown] each student
+[unknown] your friends
+[unknown] my friend - it involved string manipulation and was very time
+[unknown] an array, reduce the array to a single element
+[unknown] the minimum possible cost to
+[unknown] a few seconds (I think it was
+[coding] Link to practice: HireVue Digital Interviews
+[coding] the projected load and vector capacity of 'n' servers
+[coding] out how many servers are needed to handle the anticipated load
+[coding] time to discuss their order of preference for
+[coding] the problem for the EAGL Livelihood Foundation,
+[coding] problems from lists – there are many, but choose one that suits you
+[coding] If you choose to re-
+[coding] 1) What are your achievements and what
+[coding] all the test case (14/14) and
+[coding] through Greedy Approach
+[coding] all the test case (12/14)
+[unknown] how to download it before the hackathon started)
+[unknown] out about everyone's tech stack
+[unknown] C7OBi5s2qcrPvToDaH58IkUaRmVdSU5/view?
+[unknown] During my interview, I talked about my involvement in the e-Yantra Robotics
+[unknown] Wheredoyouseeyourcareerin10years?
+[unknown] Whatareyourachievementsandwhatlearningdidyougetfromthesame?
+[unknown] Howistheteamdoing?
+[unknown] Whatistheprogressoftheproject?
+[unknown] Areyouplanningforfurtherstudiesaftercollege?
+[unknown] HowwasIfindingitworkingwiththeteamandtechnologies?
+[unknown] Whatareyourinterests,andwhatwouldyoudoifyouwerenotaprogrammer?
+[unknown] Whatistheprojectstatus?
+[unknown] Whatareyourcontributions,whatfeaturesareyoudeveloping?
+[unknown] Whynotjustanormalbackendserverprocessingqueries?
+[unknown] Whatdatabaseareyouusing,why?
+[unknown] Sowhataboutthebadindex/badelement?
+[unknown] Whatifwechosetonotmoveatstep1itself?
+[unknown] Ifyoure-recordanyresponsethatwillbeautomaticallysubmittedasthefinal
+[unknown] Linktopractice:HireVueDigitalInterviews
+
+
+========== Mahindra Finance ==========
+[system_design] What are your interests other than academics?
+[system_design] Now can you tell me what are the 2 types of languages in Japan?
+[system_design] What are their names?
+[system_design] Then tell me, what is the currency of Japan and how do we write it?
+[system_design] your projects clearly
+
+
+========== Morgan Stanley ==========
+[unknown] for a bunch of employees, and a map of an office
+[unknown] What is SQL and NoSQL?
+[unknown] Their full forms and differences?
+[unknown] code it in a notepad or gdocs
+[unknown] implement prime factorization
+[unknown] the smallest positive number in an array
+[unknown] prime factorization
+[unknown] the student with the highest marks in every subjects
+[system_design] at least one problem daily to maintain momentum
+[system_design] out what went wrong
+[unknown] introduce myself
+[unknown] The final question was about the four basic pillars of OOP, which I explained
+[unknown] the first part and provide an idea for the second
+[hr] What are your hobbies?
+[hr] Where do you live?
+[hr] Are you a local resident or a hostellite?
+[hr] How long does your commute take?
+[hr] provide an overview of my resume or
+[hr] string is a palindrome
+[hr] an OOP concept focused on the use
+[hr] down your introduction and try to remember it by heart
+[coding] 15 minutes for the presentation and had to
+[technical] Design a Pen store
+[technical] ● Given 10 teams numbered from 1 to 10, print the match
+[technical] a number of tasks (string) ,
+[technical] out if a particular task exists so as to increase its
+[technical] 10 teams numbered from 1 to 10, print the match
+[technical] condition, map the current day to this pair, create a vector of size
+[technical] the logic to the
+[technical] the parts that you haven’t understood
+[technical] the drawbacks of the natural process and
+[technical] 5 minutes to fix the code, I
+[technical] the code, he just wanted to know how I would incorporate
+
+
+========== NPCI ==========
+[hr] ● Clarify the question if you did not understand it.
+[hr] --- PAGE BREAK ---
+[hr] any project or situation using STAR approach
+[hr] friends during the interview are:
+[hr] 3. In technical interviews, take your time to explain questions asked.
+[hr] if the number is prime or not, find sum of unique elements in the array,
+[hr] doubly linked list first from a given array, find the second highest
+[hr] some questions in your free time
+[hr] with a basic approach if you don’t have any idea of
+[hr] questions asked
+
+
+========== Oracle ==========
+[unknown] What is OOPs?
+[unknown] Difference between interface class and abstract class?
+[unknown] What is inheritance?
+[unknown] What is Method Overriding ?
+[unknown] Linked List Vs Array ?
+[unknown] Which is better & Why ?
+[unknown] Which data Structure is better if you want to insert element in the middle?
+[unknown] What is Circular Linked List and Doubly Linked List and implement them?
+[unknown] What are Joins?
+[unknown] What are different types of joins?
+[unknown] What is Self Join?
+[unknown] First he asked How Electrical Engineering is going on?
+[unknown] How you integrate API call?
+[unknown] How client side and server side work?
+[unknown] What is transaction?
+[unknown] Then He asked what are your Hobbies?
+[unknown] Social google login feature (which is mention in my
+[unknown] Stack using array
+[unknown] the index of element in sorted array
+[unknown] an array, count the frequency of each element
+[unknown] any one project in detail And also asked some questions
+[unknown] your project I was confused at that moment
+[unknown] Acid Properties
+[unknown] explain inheritance
+[unknown] write a SQL query to find the 2nd largest value of a column in a table
+[unknown] explain any of the subjects that I had in the college
+[unknown] it quickly with all test cases passed
+[unknown] the ques(cid:415)on
+[unknown] API, sort it and
+[unknown] a SQL query to find the 2nd largest value of a column in a table
+[unknown] any of the subjects that I had in the college
+[technical] Then they started to ask me if I knew about DBMS?
+[technical] Later they asked me if I play guitar?
+[technical] print the output of their
+[coding] TreeTraversals(DFS):HowitworksandHowwouldyouimplementthem?
+[coding] LinkedListVsArray?
+[coding] Whichisbetter&Why?
+[coding] Howmuchbetter?
+[coding] Whichisbetter?
+[coding] WhatisInheritance?
+[coding] YouhaveadecentCGPA,whydon’tyouwanttodoamasters?
+[coding] ThenheaskedmeifIhadanyquestionsforhim?
+[coding] Howdoyoulearnanewtechstackfromscratch?
+[coding] draw the MVC Architecture
+[coding] explain any
+[coding] code Pascal’s
+[coding] list the types of time complexity
+[coding] I was asked some basic theoretical questions about PostgreSQL(I used it in my
+[coding] an API Health Checkup Tool that was based on angular so I
+[hr] Then came the basic HR questions of why oracle?
+[hr] Where do you see yourself in the next 5 years (short term and long term goals)?
+[hr] list the principles of OOPs
+[hr] explain my projects and design
+[hr] my projects and design
+[coding] Luckily my internship project consisted of
+[coding] a coding question on Stack , there were English and Aptitude
+[coding] Luckily my internship
+[coding] a coding question on Stack , there were English and
+
+
+========== Procter & Gamble ==========
+[unknown] What kind of company is P&G?
+[unknown] How old is P&G?
+[unknown] What is its rank in fortune 500?
+[unknown] What kind of work would be expected from interns?
+[unknown] What techstack are they looking for?
+[unknown] What kind of questions would be asked in interviews?
+[unknown] you in your OA as-it-is
+[unknown] submit our resumes to the TPO
+
+
+========== PwC ==========
+[technical] explain any on project on the resume
+[technical] any on project on the resume
+
+
+========== SAP ==========
+[coding] and we have to print the
+[coding] and we had to return
+[unknown] write the code for it using any
+[unknown] write some Basic SQL query again this question was based
+[unknown] the code for it using any
+[unknown] the logic behind each
+[unknown] some Basic SQL query again this question was based
+[unknown] them a bit with their names
+
+
+========== Texas Instruments ==========
+[coding] correctly but in minimum time
+[unknown] Do you prefer to work in a team or alone and why?
+[unknown] At last they ask you if you have any questions for them?
+[unknown] code and demonstrate Runtime and
+[unknown] explain APIs , Rest APIs so be prepared
+[unknown] write a complex SQL query
+[unknown] Introduce yourself.
+[unknown] APIs , Rest APIs so be prepared
+[unknown] a scenario of the database and asked to
+[unknown] a complex SQL query
+[unknown] a problem in communication faced
+[unknown] to work at TI and
+[unknown] Texas Instruments?
+[unknown] Instruments and lastly I asked what were my areas of improvement during the interview?
+[unknown] give my introduction
+[unknown] be stress free
+[unknown] open my github repo of one of the projects in my
+[unknown] code and execute them
+[unknown] the top 20 puzzles on geeks for geeks
+[unknown] string without using any predefined function of the string
+[unknown] the problem it’s alright but
+[unknown] test and give some tips about how to crack it . So yes it is important to
+[hr] The Interviewer judges you on the
+[hr] a question logically even though you do not
+[unknown] introduce myself
+[unknown] a solution to this problem that would satisfy the customer
+[unknown] prepare a presentation for the same and present it
+[unknown] a business case study
+[unknown] of a mosfet and then he made a mosfet circuit
+
+
+========== Tracelink ==========
+[hr] Then what day is today?
+[hr] What was the biggest challenge u faced during your project?
+[hr] What are some of your strengths?
+[hr] What are some of your weaknesses?
+[hr] How would u resolve a conflict between team members?
+[hr] me are as follows:
+[hr] about your project in short
+[hr] about the real life usage of the graph data structure
+[hr] about the internal working of a map data structure
+[hr] an array of elements find the first element which occurs at least
+[hr] in depth about your projects
+[hr] a conflict between team members
+[unknown] demonstrate it in your interview
+[unknown] Leetcode daily without fail everyday
+[unknown] OOPs in your coding language
+
+
+========== UBS ==========
+[coding] The coding question was as follows- You are given an arraylist of spam_words and an
+[coding] 41 questions in total
+[coding] an arraylist of spam_words and an
+
+
+========== Visa ==========
+[coding] an integer array arr, return a new array containing all
+[coding] power-ups and barriers
+
+
+========== Wells Fargo ==========
+[coding] a list of numbers with
+[technical] What would you do?
+[technical] I was like — "Wait what?
+[technical] MongoDB query in an interview?
+[technical] What is Naman?
+[technical] No no, I meant — who is Naman?
+[technical] What’s your motivation behind what you do?
+[technical] And I was like — "Whaaaaat?
+[technical] Executive Director?
+[technical] What is Operating System?
+[technical] OS or CN — which one would you keep?
+[technical] CN has revolutionized everything?
+[technical] Why did you make another one?
+[technical] Can you work in a team?
+[technical] What if you have to work alone?
+[technical] a custom weighted moving average
+[unknown] How are you?
+[unknown] Why do you want to join Wells Fargo?
+[unknown] What are your weaknesses?
+[unknown] How can you contribute to Wells Fargo?
+[unknown] Have you ever lived outside Maharashtra?
+[unknown] Finally, on 19th May, the results were out — and guess what?
+[unknown] Looking at you, "What is Naman?

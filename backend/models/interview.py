@@ -33,6 +33,11 @@ class InterviewExperience(Document):
     created_at        = DateTimeField(default=datetime.utcnow)
 
     meta = {
+
         'collection': 'interviews',
-        'indexes': ['company', 'role', 'technologies', 'year', 'source_file']
-    }
+        'indexes': [
+        'company',
+        'role',
+        'year'
+    ]
+}

@@ -1,0 +1,34 @@
+// src/hooks/useFetch.js
+import { useState, useEffect } from "react";
+
+/**
+ * Generic data-fetching hook.
+ *
+ * Usage:
+ *   const { data, loading, error } = useFetch(getStats);
+ *   const { data, loading, error } = useFetch(() => getCompany(name), [name]);
+ */
+export function useFetch(fetchFn, deps = []) {
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    fetchFn()
+      .then((result) => { if (!cancelled) setData(result); })
+      .catch((err)   => {
+        if (!cancelled)
+          setError(err?.response?.data?.error || err.message || "Request failed");
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+
+  return { data, loading, error };
+}

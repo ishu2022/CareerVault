@@ -1,24 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AppProvider } from "./context/AppContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home          from "./pages/Home";
-import Login         from "./pages/Login";
-import Register      from "./pages/Register";
-import Dashboard     from "./pages/Dashboard";
-import Companies     from "./pages/Companies";
-import CompanyDetail from "./pages/CompanyDetail";   // ← add
+import Dashboard from "./pages/Dashboard";
+import Companies from "./pages/Companies";
+import CompanyDetail from "./pages/CompanyDetail";
+import Questions from "./pages/Questions";
+import OAPrep from "./pages/OAPrep";
+import Bookmarks from "./pages/Bookmarks";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/"                       element={<Home />} />
-        <Route path="/login"                  element={<Login />}         />
-        <Route path="/register"               element={<Register />}      />
-        <Route path="/dashboard"              element={<Dashboard />}     />
-        <Route path="/companies"              element={<Companies />}     />
-        <Route path="/companies/:companyName" element={<CompanyDetail />} />  {/* ← add */}
-      </Routes>
-    </BrowserRouter>
+    <AppProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/companies/:companyName" element={<CompanyDetail />} />
+          <Route path="/questions" element={<Questions />} />
+          <Route path="/oa-prep" element={<OAPrep />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }
 

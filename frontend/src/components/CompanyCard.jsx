@@ -1,69 +1,18 @@
-import { useNavigate } from "react-router-dom";
-
-export default function CompanyCard({ name }) {
-  const navigate = useNavigate();
-  const initial  = name?.charAt(0)?.toUpperCase() || "?";
-
+export default function CompanyCard({ logo, name, interviews, onViewDetails }) {
   return (
-    <div
-      style={s.card}
-      onClick={() => navigate(`/companies/${encodeURIComponent(name)}`)}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--accent)";
-        e.currentTarget.style.boxShadow   = "0 0 0 3px var(--accent-bg)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--border)";
-        e.currentTarget.style.boxShadow   = "none";
-      }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) =>
-        e.key === "Enter" && navigate(`/companies/${encodeURIComponent(name)}`)
-      }
-    >
-      <div style={s.avatar}>{initial}</div>
-      <div style={s.name}>{name}</div>
-      <div style={s.arrow}>→</div>
+    <div className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col items-start shadow-sm hover:shadow-md transition-shadow">
+      <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mb-3">
+        {logo}
+      </div>
+      <p className="font-semibold text-gray-900 text-sm">{name}</p>
+      <p className="text-xs text-gray-400 mb-3">{interviews} Interviews</p>
+      <button
+        type="button"
+        onClick={onViewDetails}
+        className="w-full text-center text-xs font-medium text-orange-600 border border-orange-200 rounded-lg py-1.5 hover:bg-orange-50 transition-colors"
+      >
+        View Details
+      </button>
     </div>
   );
 }
-
-const s = {
-  card: {
-    display:      "flex",
-    alignItems:   "center",
-    gap:          "14px",
-    padding:      "16px 18px",
-    background:   "var(--code-bg)",
-    border:       "1px solid var(--border)",
-    borderRadius: "10px",
-    cursor:       "pointer",
-    transition:   "border-color 0.15s, box-shadow 0.15s",
-    userSelect:   "none",
-  },
-  avatar: {
-    width:          "38px",
-    height:         "38px",
-    borderRadius:   "8px",
-    background:     "var(--accent-bg)",
-    color:          "var(--accent)",
-    display:        "flex",
-    alignItems:     "center",
-    justifyContent: "center",
-    fontWeight:     700,
-    fontSize:       "15px",
-    flexShrink:     0,
-  },
-  name: {
-    flex:       1,
-    fontSize:   "15px",
-    fontWeight: 500,
-    color:      "var(--text-h)",
-  },
-  arrow: {
-    fontSize:   "16px",
-    color:      "var(--text)",
-    flexShrink: 0,
-  },
-};

@@ -32,13 +32,8 @@ COMPANY_KEYWORDS = [
 # ══════════════════════════════════════════════════════════════════
 # ROUND CLASSIFICATION — technical / hr / skip
 # ══════════════════════════════════════════════════════════════════
-#
-# Order matters: more specific patterns are listed before broader ones
-# so e.g. "Technical Interview1(Offline)" matches the technical pattern
-# before any looser fallback could misfire.
 
 ROUND_HEADER_RULES: List[Tuple[str, str]] = [
-    # ── SKIP: Online Assessment / Coding / Aptitude / GD / misc screens ──
     (r"\bonline\s*assessment\b",                   "skip"),
     (r"\bonline\s*(?:test|round)\b",                "skip"),
     (r"\boa\s*round\b",                             "skip"),
@@ -51,23 +46,17 @@ ROUND_HEADER_RULES: List[Tuple[str, str]] = [
     (r"\bshortlisting\b",                           "skip"),
     (r"\bresume\s*shortlist",                       "skip"),
 
-    # ── TECHNICAL ───────────────────────────────────────────────────
     (r"\btechnical\s*(?:round|interview)\s*\d*\b",  "technical"),
     (r"\bmachine\s*coding\b",                       "technical"),
     (r"\bsystem\s*design\b",                        "technical"),
     (r"\bf2f\b",                                    "technical"),
     (r"\bface\s*to\s*face\b",                       "technical"),
 
-    # ── HR ─────────────────────────────────────────────────────────
     (r"\bhr\s*(?:round|interview)\b",                "hr"),
     (r"\bhuman\s*resource",                          "hr"),
     (r"\bmanagerial\s*(?:round|interview)\b",        "hr"),
     (r"\bbehaviou?ral\s*(?:round|interview)\b",      "hr"),
 
-    # ── Generic numbered "Round N" with no other signal: treat as
-    #    technical by default (most numbered rounds in this corpus are
-    #    technical discussions), but this is intentionally LAST so any
-    #    more specific pattern above always wins first.
     (r"\bround\s*[1-9]\b",                          "technical"),
 ]
 
@@ -78,12 +67,11 @@ _COMBINED_HEADER_RE = re.compile(
 
 
 def _classify_round_header(raw: str) -> str:
-    """Returns 'technical', 'hr', or 'skip' for a matched header span."""
     low = raw.lower()
     for pattern, bucket in ROUND_HEADER_RULES:
         if re.search(pattern, low, re.IGNORECASE):
             return bucket
-    return "technical"  # fallback: never silently invent a 4th bucket
+    return "technical"
 
 
 # ── Text cleaning ─────────────────────────────────────────────────
@@ -108,7 +96,6 @@ def clean_text(raw: str) -> str:
 
 
 def merge_wrapped_lines(text: str) -> str:
-    """Merge lines that are clearly continuations of the previous line."""
     CONT = {
         "and", "or", "but", "so", "yet", "nor", "for", "which", "that",
         "where", "when", "while", "who", "with", "to", "of", "in", "on",
@@ -147,7 +134,18 @@ _DOMAIN_TERMS = [
     "postgresql", "mongodb", "kubernetes", "docker", "tensorflow",
     "pytorch", "fastapi", "django", "flask", "redis", "graphql",
     "oops", "dsa", "sql", "api", "json", "html", "css", "aws", "gcp",
+    "enqueue", "dequeue", "traversal", "traversals", "discussion",
+    "implementation", "abstraction", "encapsulation", "polymorphism",
+    "inheritance", "recursion", "dbms",
+    "algorithm", "algorithms", "reusability", "learnings", "given",
+    "normalization", "denormalization", "deadlock", "multithreading",
+    "synchronous", "asynchronous", "overloading", "overriding",
+    "constructor", "destructor", "interface", "interfaces",
+    "compilation", "optimization", "scalability", "concurrency",
+    "virtualization", "serialization", "deserialization",
+    "instantiate", "instantiation", "iterator", "iterators",
 ]
+
 _DOMAIN_TERMS_SORTED = sorted(_DOMAIN_TERMS, key=len, reverse=True)
 
 _CAMELCASE_BRANDS = [
@@ -165,6 +163,35 @@ def _looks_merged(token: str) -> bool:
         return False
     return letters.isalpha()
 
+# ── PATCH 1: add a no-dependency fallback splitter, used when wordninja
+# is unavailable OR returns the word unsplit. Inserted directly above
+# _segment_word(), used inside it as a last-resort step.
+
+_KNOWN_SPLIT_HEADS = (
+    "what", "why", "how", "when", "where", "which", "who", "is", "are",
+    "do", "does", "did", "can", "could", "should", "would", "will",
+    "explain", "describe", "define", "tell", "compare", "implement",
+    "design", "write", "discuss", "list", "name", "mention", "give",
+)
+
+
+def _regex_fallback_split(word: str) -> List[str]:
+    """
+    Dependency-free segmenter for the single most common OCR pattern in
+    this corpus: a question opener glued directly onto the rest of the
+    sentence with no internal capital ("Whatisinheritance",
+    "Whatdoyouunderstandfrom..."). Tries each known head word as a
+    prefix; if found, returns [head, remainder] so the remainder can be
+    recursed into further if it is itself long/merged. This does not
+    replace wordninja — it only fires when wordninja is missing or
+    returned a single unsplit token.
+    """
+    low = word.lower()
+    for head in sorted(_KNOWN_SPLIT_HEADS, key=len, reverse=True):
+        if low.startswith(head) and len(word) > len(head) + 2:
+            rest = word[len(head):]
+            return [word[:len(head)], rest]
+    return [word]
 
 def _segment_word(word: str) -> List[str]:
     low = word.lower()
@@ -184,19 +211,17 @@ def _segment_word(word: str) -> List[str]:
 
     if _WORDNINJA_AVAILABLE:
         segmented = wordninja.split(word)
-        if segmented:
+        if segmented and len(segmented) > 1:
             return segmented
+
+    # PATCH: wordninja missing/unsplit — try the regex fallback before
+    # giving up and returning the word whole.
+    fallback = _regex_fallback_split(word)
+    if len(fallback) > 1:
+        return fallback
     return [word]
 
-
 def _fix_ocr(text: str) -> str:
-    """
-    Normalises OCR/extraction spacing issues, e.g.:
-      "Whatisrecursion?" -> "What is recursion?"
-      "Howchatgptworks?" -> "How chatgpt works?"
-    Protects known camelCase brand names (JavaScript, MongoDB, ...) so
-    they are never split.
-    """
     protected: dict = {}
     for i, brand in enumerate(_CAMELCASE_BRANDS):
         pattern = rf'\b{re.escape(brand)}\b'
@@ -244,7 +269,6 @@ def _fix_ocr(text: str) -> str:
 # CONTENT-LEVEL REJECTION RULES (Layer 2)
 # ══════════════════════════════════════════════════════════════════
 
-# Advice / instructional tips — never questions.
 ADVICE_PATTERNS = [
     r"^don'?t\s+", r"^never\s+", r"^always\s+", r"^make\s+sure\s+",
     r"^try\s+to\s+", r"^avoid\s+",
@@ -266,9 +290,6 @@ def _is_advice(text: str) -> bool:
     return bool(_ADVICE_RE.search(text.strip()))
 
 
-# Round/section HEADINGS — must never be extracted as questions, even
-# though some (e.g. "Technical Interview1(Offline)") could otherwise
-# slip past a naive opener check.
 _HEADING_RE = re.compile(
     r"^(round\s*\d+\s*[:.\-]?\s*$|"
     r"technical\s*(?:round|interview)\s*\d*\s*(?:\(.*\))?\s*$|"
@@ -286,14 +307,8 @@ def _is_heading(text: str) -> bool:
     return bool(_HEADING_RE.match(text.strip()))
 
 
-# Bare noun-phrase TITLES (1-3 capitalised words, no verb at all) —
-# these are coding-challenge / OA problem TITLES, not questions, e.g.
-# "Power Limit", "Auto Suggest", "Backlinks Sorting".
 _BARE_TITLE_RE = re.compile(r'^[A-Z][a-zA-Z\']*(\s+[A-Z][a-zA-Z\']*){0,2}[.?!]?$')
 
-# Common verbs that, if present, mean a short capitalised phrase is NOT
-# a bare title (it's an imperative/question even if short), so the
-# bare-title rejection should not fire on these.
 _HAS_VERB_RE = re.compile(
     r'\b(is|are|was|were|do|does|did|can|could|should|would|will|have|'
     r'has|had|explain|describe|define|tell|compare|differentiate|'
@@ -302,20 +317,41 @@ _HAS_VERB_RE = re.compile(
     re.IGNORECASE,
 )
 
+_SECTION_TITLE_WORDS = re.compile(
+    r'^(Round|Technical|HR|Online|Offline|Assessment|Interview|'
+    r'Discussion|Test|Coding|Professional|Fitness|Aptitude|Written|'
+    r'Group|Managerial|Behaviou?ral|Machine|System|Design|Shortlist(?:ing)?)$',
+    re.IGNORECASE,
+)
+
 
 def _is_bare_title(text: str) -> bool:
+    """
+    Rejects bare noun-phrase TITLES (coding-challenge / OA problem /
+    section-header names like "Power Limit", "Auto Suggest",
+    "Technical Interview1(Offline)") that are not questions.
+
+    A short capitalised phrase built ENTIRELY from the closed
+    round/section vocabulary (Round, Technical, Offline, Fitness, ...)
+    is always treated as a title, even at 3-4 words, since real
+    section headers in this corpus are reliably built only from that
+    vocabulary and contain no verb.
+    """
     s = text.strip()
-    if len(s.split()) > 3:
-        return False
+
     if _HAS_VERB_RE.search(s):
         return False
+
+    tokens = re.findall(r"[A-Za-z]+", s)
+    if tokens and all(_SECTION_TITLE_WORDS.match(t) for t in tokens):
+        return True
+
+    if len(s.split()) > 3:
+        return False
+
     return bool(_BARE_TITLE_RE.match(s))
 
 
-# Coding / OA PROBLEM STATEMENTS — narrative algorithmic prompts that
-# describe inputs/outputs rather than ask a conceptual question. These
-# are rejected by content even if they leak past the section skip
-# (e.g. no round header was detected at all in a short PDF).
 _CODING_PROBLEM_RE = re.compile(
     r'\b(you\s+are\s+given|given\s+an?\s+array|given\s+a\s+string|'
     r'given\s+two\s+(?:arrays|strings|numbers)|given\s+a\s+linked\s+list|'
@@ -331,8 +367,6 @@ def _is_coding_problem_statement(text: str) -> bool:
     return bool(_CODING_PROBLEM_RE.search(text.strip()))
 
 
-# Company FACT / TRIVIA statements — e.g. "1/3rd of world's total money
-# goes through BNY daily". These describe the company, not a question.
 _FACT_STATEMENT_RE = re.compile(
     r"^\d+/\d+(?:st|nd|rd|th)?\s+of\b|"
     r"\bgoes\s+through\b|\bworth\s+\$|\bmillion\s+(?:users|customers|"
@@ -346,7 +380,6 @@ def _is_fact_statement(text: str) -> bool:
     return bool(_FACT_STATEMENT_RE.search(text.strip()))
 
 
-# Generic metadata / narration noise (kept from v3, still useful).
 METADATA_PATTERNS = [
     r'\d+\s+questions?\s+(in\s+total|were\s+asked|asked)',
     r'(coding|interview)\s+question[s]?\s+was\s+as\s+follows',
@@ -372,13 +405,6 @@ MAX_LEN = 300
 # ══════════════════════════════════════════════════════════════════
 # QUESTION-SHAPE DETECTION — the positive signal
 # ══════════════════════════════════════════════════════════════════
-#
-# A candidate is ONLY treated as a real Technical/HR question if it
-# positively matches one of these openers (after stripping a leading
-# "Q3:" / "2)" style label). There is no length-based admission path
-# any more: shape, not size, decides validity. This directly fixes the
-# previous failure mode where short non-questions slipped past length
-# floors and long narrative sentences slipped past on word count alone.
 
 _LABEL_PREFIX_RE = re.compile(
     r'^(?:Q(?:uestion)?\.?\s*\d*\s*[:\.\-\)]\s*|\d+\s*[\.\)]\s*)',
@@ -394,32 +420,89 @@ QUESTION_OPENER_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Narrative patterns that describe a question being asked, rather than
+# being phrased as one. Each captures ONLY the topic text already
+# present in the source — nothing is invented. The matched topic is
+# wrapped in the minimal question/imperative shape requested:
+#   "I was asked about recursion"   -> "Explain recursion."
+#   "asked me why Deutsche Bank"    -> "Why Deutsche Bank?"
+#   "next question was inheritance" -> "Explain inheritance."
+_NARRATIVE_PATTERNS = [
+    # "asked/told me to <task verb> <topic>" — imperative, keep given verb
+    (re.compile(
+        r'(?:interviewer\s+)?(?:then\s+)?(?:asked|told)\s+(?:me\s+)?(?:to\s+)'
+        r'(Explain|Describe|Define|Implement|Design|Write|Compare|'
+        r'Differentiate|Discuss|Elaborate\s+on)\b\s*([^.!,\n]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"{m.group(1).strip().capitalize()} {m.group(2).strip()}".rstrip('.') + '.'),
+
+    # "asked me why <topic>" / "asked why <topic>" -> "Why <topic>?"
+    (re.compile(
+        r'(?:interviewer\s+)?(?:then\s+)?(?:asked|told)\s+(?:me\s+)?why\s+'
+        r'([^.!,\n?]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Why {m.group(1).strip().rstrip('.')}?"),
+
+    # "asked me about <topic>" / "asked about <topic>" -> "Explain <topic>."
+    (re.compile(
+        r'(?:interviewer\s+)?(?:then\s+)?(?:asked|told)\s+(?:me\s+)?about\s+'
+        r'([^.!,\n]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Explain {m.group(1).strip().rstrip('.')}."),
+
+    # "I was asked about <topic>" -> "Explain <topic>."
+    (re.compile(
+        r'\bI\s+was\s+asked\s+about\s+'
+        r'([^.!,\n]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Explain {m.group(1).strip().rstrip('.')}."),
+
+    # "I was asked why <topic>" -> "Why <topic>?"
+    (re.compile(
+        r'\bI\s+was\s+asked\s+why\s+'
+        r'([^.!,\n?]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Why {m.group(1).strip().rstrip('.')}?"),
+
+    # "next question was <topic>" / "next was about <topic>" -> "Explain <topic>."
+    (re.compile(
+        r'next\s+question\s+was\s+(?:about\s+)?'
+        r'([^.!,\n]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Explain {m.group(1).strip().rstrip('.')}."),
+
+    # "they asked why <topic>" -> "Why <topic>?"
+    (re.compile(
+        r'\bthey\s+asked\s+why\s+'
+        r'([^.!,\n?]{3,80})',
+        re.IGNORECASE,
+    ), lambda m: f"Why {m.group(1).strip().rstrip('.')}?"),
+]
+
+
+# ── PATCH 2: _looks_like_question() gains a merged-word prefix fallback.
+# If the clean opener regex doesn't match (because OCR repair still
+# left the line glued, e.g. wordninja split it into junk fragments),
+# check whether the lowercased line starts with a known opener word as
+# a plain string prefix — this is intentionally permissive per your
+# "keyword appears anywhere at the start, even with no spaces" rule.
 
 def _looks_like_question(text: str) -> bool:
-    """
-    Positive shape check: True only if the (label-stripped) text starts
-    with a recognised question word, auxiliary-verb opener, or
-    technical/behavioural prompt verb.
-    """
     s = _LABEL_PREFIX_RE.sub('', text.strip()).strip()
     if not s:
         return False
-    return bool(QUESTION_OPENER_RE.match(s))
+    if QUESTION_OPENER_RE.match(s):
+        return True
 
+    # PATCH: merged-word fallback — "Whatisinheritance?" or
+    # "Whatdoyouunderstandfromrecursion" not split by OCR repair.
+    low = s.lower()
+    for head in _KNOWN_SPLIT_HEADS:
+        if low.startswith(head) and len(s) > len(head) + 2:
+            return True
+    return False
 
 def _is_valid_question(text: str) -> bool:
-    """
-    Final gate combining all Layer-2 content checks. A string only
-    becomes a stored question if it:
-      - is not advice/a tip
-      - is not a round/section heading
-      - is not a bare noun-phrase title
-      - is not a coding/OA problem statement
-      - is not a company fact/trivia statement
-      - is not generic metadata/narration noise
-      - DOES start with a recognised question/prompt opener
-      - is within a sane length range
-    """
     s = text.strip()
     if not s:
         return False
@@ -472,36 +555,114 @@ def _deduplicate(qs: List[str]) -> List[str]:
             seen_lc.append(ql)
     return seen
 
-
 # ══════════════════════════════════════════════════════════════════
 # CANDIDATE EXTRACTION
 # ══════════════════════════════════════════════════════════════════
+# ── PATCH: _candidates() gains a Tier-3 fallback that only activates
+# when the normal pass (Tiers 1-2: '?' / numbered / opener-start /
+# narrative) finds NOTHING at all for this text segment. It never
+# overrides or competes with Tier 1-2 matches — it is strictly a
+# last-resort recovery layer for narrative-heavy / OCR-mangled PDFs
+# that would otherwise produce an empty list.
+
+# Same opener vocabulary as QUESTION_OPENER_RE, used for the mid-line
+# scan below (word-boundary anchored, case-insensitive).
+_MIDLINE_OPENER_RE = re.compile(
+    r'\b(What|Why|How|When|Where|Which|Who|Whom|Whose|Can|Could|Should|'
+    r'Would|Will|Is|Are|Do|Does|Did|Explain|Describe|Define|Tell|'
+    r'Compare|Differentiate|Discuss|Implement|Design|Write|List|Name|'
+    r'Mention|Give)\b',
+    re.IGNORECASE,
+)
+
+# ── PATCH: _candidates() gains Tier 4 — a structural-shape recovery
+# layer for genuine technical-prompt SHAPES that carry no opener word
+# and no '?' at all (lowercase fragments like "list memory units in
+# ascending order", "binary tree or binary search tree",
+# "string to query string"). Fires ONLY when Tiers 1-3 found nothing
+# for the whole segment. Recovers existing text verbatim or with a
+# minimal, non-inventive prefix — never fabricates new content words.
+
+# Tier 4a: "X or Y" comparison fragments — these are almost always a
+# real interview question with the question mark/opener stripped by
+# OCR or copy-paste ("binary tree or binary search tree",
+# "stack or queue for this problem"). Requires both sides to look like
+# real noun phrases (2+ alpha words combined, no leading stopword noise)
+# and the line to contain nothing but the comparison itself.
+_OR_COMPARISON_RE = re.compile(
+    r'^([A-Za-z][A-Za-z\s]{2,40}?)\s+or\s+([A-Za-z][A-Za-z\s]{2,40}?)[\.\?]?$',
+    re.IGNORECASE,
+)
+
+# Tier 4b: bare imperative-task fragments that lost their leading verb
+# capital during OCR/cleanup but are still clearly instructions ("list
+# memory units in ascending order", "order them ram cd hard disk cache",
+# "sort the array using merge sort"). Anchored on a closed, deliberately
+# small verb set to avoid over-triggering on narration.
+_BARE_IMPERATIVE_RE = re.compile(
+    r'^(list|name|order|sort|arrange|draw|differentiate|compare)\b\s+'
+    r'([A-Za-z][A-Za-z0-9\s,\(\)\-]{4,80})$',
+    re.IGNORECASE,
+)
+
+# Tier 4c: "<topic A> to/vs/versus <topic B>" fragments missing their
+# leading "Convert"/"Difference between" wrapper ("string to query
+# string", "array to linked list conversion").
+_AB_RELATION_RE = re.compile(
+    r'^([A-Za-z][A-Za-z\s]{2,30}?)\s+(?:to|vs\.?|versus)\s+'
+    r'([A-Za-z][A-Za-z\s]{2,30}?)$',
+    re.IGNORECASE,
+)
+
+# Lines that are clearly narration/noise even if they match a Tier-4
+# shape — explicitly excluded so Tier 4 doesn't undo Layer-2 rejection
+# intent (e.g. "interviewer or me" should never recover).
+_TIER4_EXCLUDE_RE = re.compile(
+    r'\b(interviewer|panel|hr person|recruiter|i said|i replied|'
+    r'my answer|page \d+|round \d+)\b',
+    re.IGNORECASE,
+)
+def _try_merged_word_recovery(line: str) -> Optional[str]:
+    stripped = _LABEL_PREFIX_RE.sub('', line.strip()).strip()
+    low = stripped.lower()
+    for head in sorted(_KNOWN_SPLIT_HEADS, key=len, reverse=True):
+        if low.startswith(head) and len(stripped) > len(head) + 2:
+            # Only treat as merged if there's no space right after the
+            # head already (otherwise this is a normal sentence and
+            # Tier 1 above would have caught it first).
+            if stripped[len(head):len(head) + 1] != ' ':
+                return stripped[:len(head)] + ' ' + stripped[len(head):]
+    return None
+
 
 def _candidates(text: str) -> List[str]:
-    """
-    Extracts raw question-shaped candidates from a TEXT SEGMENT THAT HAS
-    ALREADY BEEN CONFIRMED TO BE A TECHNICAL/HR SECTION by the caller
-    (extract_rounds_with_questions). This function does not know about
-    round types — section-level filtering happens one level up so that
-    OA/Coding content is never even handed to this function in the
-    normal (round-headers-detected) path.
-    """
     found = []
-    for line in text.split('\n'):
-        line = _fix_ocr(line.strip())
+    fallback_pool: List[str] = []
+
+    for raw_line in text.split('\n'):
+        line = _fix_ocr(raw_line.strip())
         if not line:
             continue
+
+        # ── Tier 0: merged-word recovery (runs before everything else,
+        # on BOTH '?'-terminated and non-'?' lines) ──────────────────
+        recovered_line = _try_merged_word_recovery(line)
+        if recovered_line:
+            line = recovered_line  # use the space-repaired version downstream
+
+        # ── Numbered-prefix strip — now runs unconditionally, even
+        # when the line ends with '?', fixing "2. Which language...?"
+        # being kept with its number intact. ─────────────────────────
+        num_match = re.match(r'^(?:Q\.?\s*)?\d+[\.\)]\s*(.+)', line)
+        if num_match:
+            line = num_match.group(1).strip()
 
         if line.endswith('?'):
             found.append(line)
             continue
 
-        m = re.match(r'^(?:Q\.?\s*)?\d+[\.\)]\s*(.+)', line)
-        if m:
-            found.append(m.group(1).strip())
-            continue
-
-        if QUESTION_OPENER_RE.match(line):
+        stripped = _LABEL_PREFIX_RE.sub('', line).strip()
+        if QUESTION_OPENER_RE.match(line) or (stripped and QUESTION_OPENER_RE.match(stripped)):
             found.append(line)
             continue
 
@@ -513,18 +674,76 @@ def _candidates(text: str) -> List[str]:
         )
         if m2:
             found.append(m2.group(1).strip())
+            continue
 
-    return found
+        converted = None
+        for pattern, rewrite in _NARRATIVE_PATTERNS:
+            nm = pattern.search(line)
+            if nm:
+                converted = rewrite(nm)
+                break
+        if converted:
+            found.append(converted.strip())
+            continue
 
+        if len(line) >= 8:
+            fallback_pool.append(line)
+
+    if found:
+        return found
+    # ── Tier 3: mid-line opener recovery ──────────────────────────
+    recovered = []
+    for line in fallback_pool:
+        mm = _MIDLINE_OPENER_RE.search(line)
+        if mm and mm.start() > 0:
+            clipped = line[mm.start():].strip()
+            if len(clipped) >= 8:
+                recovered.append(clipped)
+    if recovered:
+        return recovered
+
+    # ── Tier 4: structural-shape recovery (no opener, no '?') ──────
+    tier4 = []
+    for line in fallback_pool:
+        if _TIER4_EXCLUDE_RE.search(line):
+            continue
+
+        m_or = _OR_COMPARISON_RE.match(line)
+        if m_or:
+            tier4.append(line.rstrip('.') + '?')
+            continue
+
+        m_imp = _BARE_IMPERATIVE_RE.match(line)
+        if m_imp:
+            verb = m_imp.group(1).capitalize()
+            rest = m_imp.group(2).strip()
+            tier4.append(f"{verb} {rest}".rstrip('.') + '.')
+            continue
+
+        m_ab = _AB_RELATION_RE.match(line)
+        if m_ab:
+            tier4.append(f"Difference between {m_ab.group(1).strip()} and {m_ab.group(2).strip()}.")
+            continue
+
+    return tier4
+
+def _looks_like_question(text: str) -> bool:
+    s = _LABEL_PREFIX_RE.sub('', text.strip()).strip()
+    if not s:
+        return False
+    if QUESTION_OPENER_RE.match(s):
+        return True
+    low = s.lower()
+    for head in _KNOWN_SPLIT_HEADS:
+        if low.startswith(head) and len(s) > len(head) + 2:
+            return True
+    # PATCH: Tier-3 candidates are pre-clipped to start at the opener
+    # word by _candidates(), so a plain opener-prefix check (already
+    # covered by QUESTION_OPENER_RE.match(s) above) is sufficient —
+    # no additional relaxation needed here.
+    return False
 
 def extract_questions(text: str) -> List[str]:
-    """
-    Public API — returns clean, deduplicated TECHNICAL/HR questions from
-    a text segment. Callers are expected to have already excluded
-    Online Assessment / Coding Round content; this function additionally
-    re-applies the full content-level validator as a safety net for
-    text with no detected round headers at all.
-    """
     raw = _candidates(text)
     valid = [c for c in raw if _is_valid_question(c)]
     unique = _deduplicate(valid)
@@ -536,11 +755,6 @@ def extract_questions(text: str) -> List[str]:
 # ══════════════════════════════════════════════════════════════════
 
 def _find_round_boundaries(text: str) -> List[Tuple[int, int, str]]:
-    """
-    Finds every round-header occurrence and returns
-    (start, end, bucket) spans, where bucket is 'technical', 'hr', or
-    'skip'. Name kept exactly as required for compatibility.
-    """
     matches = list(_COMBINED_HEADER_RE.finditer(text))
     if not matches:
         return []
@@ -554,45 +768,30 @@ def _find_round_boundaries(text: str) -> List[Tuple[int, int, str]]:
 
 
 def extract_rounds_with_questions(text: str) -> List[dict]:
-    """
-    Slices text by round boundary, SKIPS any 'skip'-bucket section
-    (Online Assessment, Coding Round, Aptitude, Written Test, Group
-    Discussion, Professional Fitness, etc) entirely — those sections
-    are never passed to extract_questions() — and only extracts
-    questions from 'technical' and 'hr' sections.
-
-    If no round headers are detected at all (short/informal PDFs),
-    falls back to scanning the whole text once, relying entirely on
-    Layer 2 content validation (_is_valid_question) to keep only real
-    Technical/HR-style questions and reject OA/coding/fact/heading
-    content that might otherwise be present with no section markers.
-
-    Name and return shape kept exactly as required for compatibility:
-        [{'round_type': str, 'questions': [...], 'tips': []}]
-    """
     boundaries = _find_round_boundaries(text)
 
     if not boundaries:
         qs = extract_questions(text)
         return [{'round_type': 'unknown', 'questions': qs, 'tips': []}] if qs else []
 
-    rounds = []
-    seen_types = set()
+    segments_by_bucket: dict = {}
+    order: List[str] = []
     for (start, end, bucket) in boundaries:
         if bucket == "skip":
-            # Layer 1: Online Assessment / Coding / Aptitude / GD / etc.
-            # is dropped here, before any question extraction runs.
             continue
-        if bucket in seen_types:
-            continue
-        seen_types.add(bucket)
+        segments_by_bucket.setdefault(bucket, []).append(text[start:end])
+        if bucket not in order:
+            order.append(bucket)
+
+    rounds = []
+    for bucket in order:
+        combined_text = '\n'.join(segments_by_bucket[bucket])
         rounds.append({
             'round_type': bucket,
-            'questions': extract_questions(text[start:end]),
+            'questions': extract_questions(combined_text),
             'tips': [],
         })
     return rounds
-
 
 # ══════════════════════════════════════════════════════════════════
 # COMPANY EXTRACTION (unchanged behaviour from v3, schema-compatible)
@@ -621,10 +820,6 @@ def _strip_filename_noise(stem: str) -> str:
 
 
 def extract_company_from_filename(filename: str) -> str:
-    """
-    Parses common real-world filename patterns to recover the company
-    name BEFORE ever looking at the PDF body text.
-    """
     if not filename:
         return ""
 
@@ -746,12 +941,7 @@ def extract_role(text: str) -> str:
 
 # ── Main entry point ──────────────────────────────────────────────
 
-def parse_structure(text: str, filename: str = "") -> dict:
-    """
-    Called by pipeline.py. Schema-compatible with the existing
-    MongoDB document shape — only the CONTENT of rounds[].questions
-    changes (Technical/HR only), not the structure.
-    """
+def parse_structure(text: str, filename: str = "", folder_path: str = "") -> dict:
     cleaned = clean_text(text)
     cleaned = merge_wrapped_lines(cleaned)
     return {

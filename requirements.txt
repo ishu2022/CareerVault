@@ -28,3 +28,4 @@ google-auth-httplib2==0.2.0
 celery==5.4.0
 redis==5.2.1
 
+pip freeze | findstr wordninja

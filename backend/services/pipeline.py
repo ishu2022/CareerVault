@@ -50,6 +50,8 @@ def run_pipeline(
 
     try:
         parsed = parse_structure(raw_text, filename=name, folder_path=folder_path)
+        print(f"[TRACE] {name} -> {parsed.get('rounds')}")
+        
     except Exception as e:
         print(f"[pipeline] Parse failed: {name} — {e}")
         return {'source_file': name, 'skipped': False, 'error': f"parsing: {e}"}
@@ -91,7 +93,9 @@ def run_pipeline(
             extraction_method = 'rule_based',
             raw_text          = raw_text[:500],
         )
+
         doc.save()
+
         print(f"[pipeline] ✓ Saved → id: {doc.id}")
 
         return {

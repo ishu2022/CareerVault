@@ -1,12 +1,22 @@
-import client from "./client";
+import axios from "axios";
 
-export const getStats = () =>
-  client.get("/stats").then((r) => r.data);
+const API_BASE_URL = "http://localhost:5000/api/v1";
 
-export const getCompanies = () =>
-  client.get("/companies").then((r) => r.data);
+export const getCompanies = async () => {
+  const response = await axios.get(`${API_BASE_URL}/companies`);
+  return response.data;
+};
 
-// GET /api/v1/companies/:name
-// Returns: { company, experiences: [{ difficulty, outcome, role, year, rounds }] }
-export const getCompany = (name) =>
-  client.get(`/companies/${encodeURIComponent(name)}`).then((r) => r.data);
+export const getStats = async () => {
+  const response = await axios.get(`${API_BASE_URL}/stats`);
+  return response.data;
+};
+
+// ADD THIS
+export const getCompany = async (companyName) => {
+  const response = await axios.get(
+    `${API_BASE_URL}/companies/${encodeURIComponent(companyName)}`
+  );
+
+  return response.data;
+};

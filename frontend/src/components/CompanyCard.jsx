@@ -5,7 +5,11 @@ export default function CompanyCard({ logo, name, interviews, onViewDetails }) {
         {logo}
       </div>
       <p className="font-semibold text-gray-900 text-sm">{name}</p>
-      <p className="text-xs text-gray-400 mb-3">{interviews} Interviews</p>
+      <p className="text-xs text-gray-400 mb-3">
+        {interviews !== null && interviews !== undefined
+          ? `${interviews} Interviews`
+          : "View interview experiences"}
+      </p>
       <button
         type="button"
         onClick={onViewDetails}

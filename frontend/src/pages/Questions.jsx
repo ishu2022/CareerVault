@@ -1,30 +1,60 @@
-import React from "react";
-import { Search, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { Search } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import QuestionCard from "../components/QuestionCard";
 import { useAppContext } from "../context/AppContext";
-import { questions } from "../data/questions";
-
-const TOPIC_OPTIONS = ["All", "DSA", "DBMS", "OS", "OOP", "React"];
+import { searchQuestions } from "../api/api";
 
 const Questions = () => {
-  const {
-    searchQuery,
-    setSearchQuery,
-    selectedTopic,
-    setSelectedTopic,
-  } = useAppContext();
+  const { searchQuery, setSearchQuery } = useAppContext();
 
-  const filteredQuestions = questions.filter((q) => {
-    const term = searchQuery.toLowerCase();
-    const matchesSearch =
-      q.question.toLowerCase().includes(term) ||
-      q.company.toLowerCase().includes(term) ||
-      q.topic.toLowerCase().includes(term);
-    const matchesTopic = selectedTopic === "All" || q.topic === selectedTopic;
-    return matchesSearch && matchesTopic;
-  });
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState("All");
+  const [hasSearched, setHasSearched] = useState(false);
+
+  // Debounced search — waits 300ms after typing stops before calling backend
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      setHasSearched(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetchResults(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const fetchResults = useCallback(async (keyword) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setHasSearched(true);
+      const data = await searchQuestions(keyword);
+      setResults(data);
+    } catch (err) {
+      setError("Failed to fetch questions. Please try again.");
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Unique companies from current result set, for the filter dropdown
+  const companyOptions = [
+    "All",
+    ...new Set(results.map((r) => r.company)),
+  ];
+
+  const filteredResults =
+    selectedCompany === "All"
+      ? results
+      : results.filter((r) => r.company === selectedCompany);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -51,7 +81,7 @@ const Questions = () => {
             />
             <input
               type="text"
-              placeholder="Search questions, topics, or keywords..."
+              placeholder="Search questions by keyword..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl
@@ -60,52 +90,69 @@ const Questions = () => {
             />
           </div>
 
-          {/* Topic filter chips */}
-          <div className="flex items-center gap-2 mb-6 flex-wrap">
-            {TOPIC_OPTIONS.map((topic) => (
-              <button
-                key={topic}
-                onClick={() => setSelectedTopic(topic)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-colors ${
-                  selectedTopic === topic
-                    ? "bg-orange-500 text-white border-orange-500"
-                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
-                }`}
+          {/* Company filter — only shown once we have results to filter */}
+          {results.length > 0 && (
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-sm text-gray-500">Company:</span>
+              <select
+                value={selectedCompany}
+                onChange={(e) => setSelectedCompany(e.target.value)}
+                className="text-sm border border-gray-200 rounded-lg px-3 py-2 text-gray-700 bg-white"
               >
-                {topic}
-              </button>
-            ))}
-          </div>
+                {companyOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Results header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-gray-900">Results</h2>
-              <span className="text-xs px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full">
-                {filteredQuestions.length} Results Found
-              </span>
+          {hasSearched && !loading && (
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-bold text-gray-900">Results</h2>
+                <span className="text-xs px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full">
+                  {filteredResults.length} Results Found
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Results list */}
-          <div className="space-y-4">
-            {filteredQuestions.length > 0 ? (
-              filteredQuestions.map((item) => (
+          {/* States: loading / error / empty / results */}
+          {loading && (
+            <p className="text-gray-500 text-sm">Searching questions...</p>
+          )}
+
+          {!loading && error && (
+            <p className="text-red-500 text-sm">{error}</p>
+          )}
+
+          {!loading && !error && hasSearched && filteredResults.length === 0 && (
+            <p className="text-gray-500 text-center mt-10">
+              No questions found matching "{searchQuery}"
+            </p>
+          )}
+
+          {!loading && !error && !hasSearched && (
+            <p className="text-gray-400 text-center mt-10 text-sm">
+              Start typing to search interview questions across all companies.
+            </p>
+          )}
+
+          {!loading && !error && filteredResults.length > 0 && (
+            <div className="space-y-4">
+              {filteredResults.map((item, index) => (
                 <QuestionCard
-                  key={item.id}
-                  id={item.id}
+                  key={`${item.company}-${index}`}
                   company={item.company}
                   question={item.question}
-                  topic={item.topic}
-                  year={item.year}
+                  roundType={item.round_type}
                 />
-              ))
-            ) : (
-              <p className="text-gray-500 text-center mt-10">
-                No questions found matching "{searchQuery}"
-              </p>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>

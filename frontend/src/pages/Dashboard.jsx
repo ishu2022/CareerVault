@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Building2, Users, HelpCircle, TrendingUp, Trophy, ArrowRight } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -6,14 +7,13 @@ import CompanyCard from "../components/CompanyCard";
 import InterviewTrendChart from "../components/InterviewTrendChart";
 import RecentInterviews from "../components/RecentInterviews";
 import PopularTopics from "../components/PopularTopics";
+import { getStats } from "../api/api";
 
-// TODO (Next Phase / API Integration): replace these static arrays with
-// useState + useEffect + axios calls to /api/v1/stats, /api/v1/companies, etc.
-const stats = [
-  { icon: Building2, iconBg: "bg-orange-50", iconColor: "text-orange-500", label: "Companies", value: "120+", subtitle: "Total Companies" },
-  { icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-500", label: "Interviews", value: "1.2K+", subtitle: "Total Interviews" },
-  { icon: HelpCircle, iconBg: "bg-emerald-50", iconColor: "text-emerald-500", label: "Questions", value: "8.4K+", subtitle: "Total Questions" },
-  { icon: TrendingUp, iconBg: "bg-purple-50", iconColor: "text-purple-500", label: "Active Contributors", value: "320+", subtitle: "Community Members" },
+const statConfig = [
+  { key: "total_companies", icon: Building2, iconBg: "bg-orange-50", iconColor: "text-orange-500", label: "Companies", subtitle: "Total Companies" },
+  { key: "total_interviews", icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-500", label: "Interviews", subtitle: "Total Interviews" },
+  { key: "total_questions", icon: HelpCircle, iconBg: "bg-emerald-50", iconColor: "text-emerald-500", label: "Questions", subtitle: "Total Questions" },
+  { key: "total_rounds", icon: TrendingUp, iconBg: "bg-purple-50", iconColor: "text-purple-500", label: "Interview Rounds", subtitle: "Total Rounds Recorded" },
 ];
 
 const companies = [
@@ -81,6 +81,26 @@ const popularTopics = [
 ];
 
 export default function Dashboard() {
+  const [statsData, setStatsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getStats();
+        setStatsData(data);
+      } catch (err) {
+        setError("Failed to load stats.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
   return (
     <div className="flex bg-gray-50 min-h-screen">
       <Sidebar />
@@ -90,11 +110,23 @@ export default function Dashboard() {
 
         <main className="p-8 space-y-6">
           {/* Stats row */}
-          <div className="grid grid-cols-4 gap-5">
-            {stats.map((s) => (
-              <StatsCard key={s.label} {...s} />
-            ))}
-          </div>
+          {loading && <p className="text-gray-500 text-sm">Loading stats...</p>}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {!loading && !error && statsData && (
+            <div className="grid grid-cols-4 gap-5">
+              {statConfig.map((s) => (
+                <StatsCard
+                  key={s.key}
+                  icon={s.icon}
+                  iconBg={s.iconBg}
+                  iconColor={s.iconColor}
+                  label={s.label}
+                  value={statsData[s.key]}
+                  subtitle={s.subtitle}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Top Companies + Interview Trend */}
           <div className="grid grid-cols-3 gap-6">

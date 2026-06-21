@@ -2,9 +2,9 @@ import React from "react";
 import { Bookmark } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 
-const QuestionCard = ({ id, company, question, topic, year }) => {
+const QuestionCard = ({ company, question, roundType }) => {
   const { toggleBookmark, isBookmarked } = useAppContext();
-  const bookmarked = isBookmarked(id);
+  const bookmarked = isBookmarked(question);
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
@@ -20,23 +20,19 @@ const QuestionCard = ({ id, company, question, topic, year }) => {
           {question}
         </h3>
 
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-            {topic}
-          </span>
-          {year && (
-            <>
-              <span>•</span>
-              <span>Asked in {year}</span>
-            </>
-          )}
-        </div>
+        {roundType && (
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <span className="flex items-center gap-1 capitalize">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+              {roundType} Round
+            </span>
+          </div>
+        )}
       </div>
 
       <button
         type="button"
-        onClick={() => toggleBookmark(id)}
+        onClick={() => toggleBookmark({ company, question, round_type: roundType })}
         className={`w-9 h-9 flex items-center justify-center border rounded-lg transition-colors flex-shrink-0 ml-4 ${
           bookmarked
             ? "border-orange-300 text-orange-500 bg-orange-50"

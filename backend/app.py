@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
+from api.contribute import bp as contribute_bp
 from api.companies import bp as companies_bp
 from api.questions import bp as questions_bp
 from api.upload    import bp as upload_bp
@@ -28,7 +28,7 @@ def create_app():
     app.register_blueprint(upload_bp,    url_prefix="/api/v1")
     app.register_blueprint(ingestion_bp, url_prefix="/api/v1")
     app.register_blueprint(stats_bp,     url_prefix="/api/v1")
-
+    app.register_blueprint(contribute_bp, url_prefix="/api/v1")
     @app.errorhandler(404)
     def not_found(e):
         return {"error": "not found"}, 404

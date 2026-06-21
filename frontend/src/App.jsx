@@ -7,6 +7,8 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Questions from "./pages/Questions";
 import OAPrep from "./pages/OAPrep";
 import Bookmarks from "./pages/Bookmarks";
+import Contribute from "./pages/Contribute";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/questions" element={<Questions />} />
           <Route path="/oa-prep" element={<OAPrep />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route path="/contribute" element={<Contribute />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </Router>
     </AppProvider>

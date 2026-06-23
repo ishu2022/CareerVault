@@ -62,3 +62,13 @@ export const submitExperience = async (formData) => {
   const res = await apiClient.post("/experiences", formData);
   return res.data;
 };
+
+export const getPopularTopics = async () => {
+  const res = await apiClient.get("/stats/topics");
+  return res.data;
+};
+
+export const deleteExperience = async (experienceId) => {
+  const res = await apiClient.delete(`/experiences/${experienceId}`);
+  return res.data;
+};

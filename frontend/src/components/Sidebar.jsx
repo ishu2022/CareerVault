@@ -12,12 +12,14 @@ import {
   Sun,
   Moon,
   Rocket,
+  FileText,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", icon: Home, path: "/" },
   { label: "Companies", icon: Building2, path: "/companies" },
   { label: "Question Search", icon: Search, path: "/questions" },
+  { label: "OA Prep", icon: FileText, path: "/oa-prep" },
   { label: "Bookmarks", icon: Bookmark, path: "/bookmarks" },
   { label: "Contribute", icon: CheckCircle2, path: "/contribute" },
   { label: "About Us", icon: Info, path: "/about" },

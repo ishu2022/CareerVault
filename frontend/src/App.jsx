@@ -9,6 +9,7 @@ import OAPrep from "./pages/OAPrep";
 import Bookmarks from "./pages/Bookmarks";
 import Contribute from "./pages/Contribute";
 import About from "./pages/About";
+import MockTest from "./pages/MockTest";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/contribute" element={<Contribute />} />
           <Route path="/about" element={<About />} />
+          <Route path="/oa-prep/mock" element={<MockTest />} />
         </Routes>
       </Router>
     </AppProvider>

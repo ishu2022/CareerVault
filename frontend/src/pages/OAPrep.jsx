@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
   BarChart2,
@@ -36,6 +37,7 @@ const OAPrep = () => {
   const [companyData, setCompanyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch full company list once, for the dropdown
   useEffect(() => {
@@ -113,9 +115,8 @@ const OAPrep = () => {
     Other: { icon: <Monitor size={16} className="text-gray-500" />, bg: "bg-gray-50" },
   };
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+  return (    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar activeItem="OA Prep" />
 
       <div className="flex-1 flex flex-col">
         <Navbar />
@@ -207,6 +208,13 @@ const OAPrep = () => {
                   subtitle="Extracted from experiences"
                 />
               </div>
+              <button
+
+  onClick={() => navigate(`/oa-prep/mock?company=${encodeURIComponent(selectedCompany)}`)}
+  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl mb-6 transition-colors"
+>
+  Start Mock Test for {selectedCompany}
+</button>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">

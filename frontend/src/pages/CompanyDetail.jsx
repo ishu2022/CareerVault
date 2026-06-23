@@ -4,6 +4,8 @@ import { ArrowLeft, FileText, Layers } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { getCompany } from "../api/api";
+import { deleteExperience } from "../api/api";
+import { Trash2 } from "lucide-react";
 
 const difficultyStyles = {
   easy: "bg-green-50 text-green-600",
@@ -20,10 +22,10 @@ const outcomeStyles = {
 const CompanyDetail = () => {
   const { companyName } = useParams();
   const navigate = useNavigate();
-
   const [companyData, setCompanyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     const fetchCompany = async () => {
@@ -95,6 +97,26 @@ const CompanyDetail = () => {
     0
   );
 
+  const handleDelete = async (experienceId) => {
+  if (!window.confirm("Are you sure you want to delete this experience? This cannot be undone.")) {
+    return;
+  }
+
+  try {
+    setDeletingId(experienceId);
+    await deleteExperience(experienceId);
+    // Remove from local state immediately, no need to refetch
+    setCompanyData((prev) => ({
+      ...prev,
+      experiences: prev.experiences.filter((exp) => exp.id !== experienceId),
+    }));
+  } catch (err) {
+    alert("Failed to delete experience. Please try again.");
+  } finally {
+    setDeletingId(null);
+  }
+};
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -110,6 +132,31 @@ const CompanyDetail = () => {
             <ArrowLeft size={16} />
             Back to Companies
           </button>
+
+          <div className="flex items-center gap-3 mb-3">
+  {showRole && (
+    <h3 className="font-semibold text-gray-900 text-sm">
+      {exp.role}
+    </h3>
+  )}
+  <span className="text-xs text-gray-400">{exp.year}</span>
+  <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${difficultyStyles[exp.difficulty] || "bg-gray-100 text-gray-500"}`}>
+    {exp.difficulty}
+  </span>
+  <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${outcomeStyles[exp.outcome] || outcomeStyles.unknown}`}>
+    {exp.outcome}
+  </span>
+
+  {/* New delete button — pushed to the right */}
+  <button
+    onClick={() => handleDelete(exp.id)}
+    disabled={deletingId === exp.id}
+    className="ml-auto flex items-center gap-1 text-xs text-red-500 hover:bg-red-50 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50"
+  >
+    <Trash2 size={13} />
+    {deletingId === exp.id ? "Deleting..." : "Delete"}
+  </button>
+</div>
 
           {/* Header card */}
           <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm mb-6 flex items-center gap-5">

@@ -1,9 +1,16 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Rocket, Plus, Trash2, CheckCircle } from "lucide-react";
+import Navbar from "../components/Navbar";
+import { Rocket, Plus, Trash2, CheckCircle, AlertCircle, FileText, Award } from "lucide-react";
 import { submitExperience } from "../api/api";
 
 const emptyRound = () => ({ round_type: "technical", questions: [""], tips: [""] });
+
+const roundTypeStyles = {
+  technical: "bg-blue-50 text-blue-600 border-blue-200",
+  hr: "bg-pink-50 text-pink-600 border-pink-200",
+  managerial: "bg-purple-50 text-purple-600 border-purple-200",
+};
 
 export default function Contribute() {
   const [company, setCompany] = useState("");
@@ -95,166 +102,241 @@ export default function Contribute() {
     }
   };
 
+  const totalQuestions = rounds.reduce(
+    (sum, r) => sum + r.questions.filter((q) => q.trim()).length,
+    0
+  );
+
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-gray-50 flex">
       <Sidebar activeItem="Contribute" />
 
-      <div className="flex-1 p-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
-            <Rocket className="w-6 h-6 text-orange-500" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Contribute</h1>
-            <p className="text-gray-500">
-              Share your interview experience and help others.
-            </p>
-          </div>
-        </div>
+      <div className="flex-1 flex flex-col">
+        <Navbar />
 
-        <div className="bg-white border rounded-2xl p-6 shadow-sm max-w-3xl">
-          <h2 className="text-xl font-semibold mb-4">
-            Submit Interview Experience
-          </h2>
+        <main className="p-8 max-w-4xl">
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
+              <Rocket className="w-7 h-7 text-orange-500" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Contribute</h1>
+              <p className="text-gray-500 mt-0.5">
+                Share your interview experience and help others prepare better.
+              </p>
+            </div>
+          </div>
 
+          {/* Status banners */}
           {success && (
-            <div className="flex items-center gap-2 bg-green-50 text-green-700 text-sm px-4 py-3 rounded-lg mb-4">
-              <CheckCircle size={16} />
+            <div className="flex items-center gap-2 bg-green-50 border border-green-100 text-green-700 text-sm px-4 py-3 rounded-xl mb-5">
+              <CheckCircle size={16} className="flex-shrink-0" />
               Experience submitted successfully. Thank you for contributing!
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">
+            <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl mb-5">
+              <AlertCircle size={16} className="flex-shrink-0" />
               {error}
             </div>
           )}
 
-          <input
-            type="text"
-            placeholder="Company Name *"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 mb-4"
-          />
+          {/* Section 1: Basic Info */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mb-5">
+            <div className="flex items-center gap-2 mb-5">
+              <Award size={16} className="text-orange-500" />
+              <h2 className="text-base font-bold text-gray-900">
+                Interview Details
+              </h2>
+            </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">
+              Company Name *
+            </label>
             <input
               type="text"
-              placeholder="Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border rounded-lg px-4 py-3"
+              placeholder="e.g. Amazon, Google, TCS"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 mb-4 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
             />
-            <input
-              type="text"
-              placeholder="Year (e.g. 2025)"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              className="w-full border rounded-lg px-4 py-3"
-            />
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                  Role
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. SDE Intern"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                  Year
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 2025"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                  Difficulty
+                </label>
+                <select
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700
+                             focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">
+                  Outcome
+                </label>
+                <select
+                  value={outcome}
+                  onChange={(e) => setOutcome(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700
+                             focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
+                >
+                  <option value="selected">Selected</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="unknown">Unknown</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 text-gray-700"
-            >
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-            <select
-              value={outcome}
-              onChange={(e) => setOutcome(e.target.value)}
-              className="w-full border rounded-lg px-4 py-3 text-gray-700"
-            >
-              <option value="selected">Selected</option>
-              <option value="rejected">Rejected</option>
-              <option value="unknown">Unknown</option>
-            </select>
-          </div>
+          {/* Section 2: Rounds */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mb-5">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <FileText size={16} className="text-orange-500" />
+                <h2 className="text-base font-bold text-gray-900">
+                  Interview Rounds
+                </h2>
+              </div>
+              {totalQuestions > 0 && (
+                <span className="text-xs px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full">
+                  {totalQuestions} question{totalQuestions !== 1 ? "s" : ""} added
+                </span>
+              )}
+            </div>
 
-          {/* Rounds */}
-          <div className="space-y-4 mb-6">
-            {rounds.map((round, rIndex) => (
-              <div
-                key={rIndex}
-                className="border border-gray-200 rounded-xl p-4"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <select
-                    value={round.round_type}
-                    onChange={(e) =>
-                      updateRound(rIndex, "round_type", e.target.value)
-                    }
-                    className="border rounded-lg px-3 py-2 text-sm text-gray-700"
-                  >
-                    <option value="technical">Technical</option>
-                    <option value="hr">HR</option>
-                    <option value="managerial">Managerial</option>
-                  </select>
-
-                  {rounds.length > 1 && (
-                    <button
-                      onClick={() => removeRound(rIndex)}
-                      className="text-red-500 text-sm flex items-center gap-1 hover:underline"
-                    >
-                      <Trash2 size={14} />
-                      Remove Round
-                    </button>
-                  )}
-                </div>
-
-                {round.questions.map((q, qIndex) => (
-                  <div key={qIndex} className="flex items-center gap-2 mb-2">
-                    <input
-                      type="text"
-                      placeholder={`Question ${qIndex + 1}`}
-                      value={q}
+            <div className="space-y-4">
+              {rounds.map((round, rIndex) => (
+                <div
+                  key={rIndex}
+                  className="border border-gray-200 rounded-xl p-5"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <select
+                      value={round.round_type}
                       onChange={(e) =>
-                        updateQuestion(rIndex, qIndex, e.target.value)
+                        updateRound(rIndex, "round_type", e.target.value)
                       }
-                      className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                    />
-                    {round.questions.length > 1 && (
+                      className={`text-sm font-medium px-3 py-1.5 rounded-lg border capitalize ${
+                        roundTypeStyles[round.round_type] || roundTypeStyles.technical
+                      }`}
+                    >
+                      <option value="technical">Technical</option>
+                      <option value="hr">HR</option>
+                      <option value="managerial">Managerial</option>
+                    </select>
+
+                    {rounds.length > 1 && (
                       <button
-                        onClick={() => removeQuestion(rIndex, qIndex)}
-                        className="text-gray-400 hover:text-red-500"
+                        onClick={() => removeRound(rIndex)}
+                        className="text-red-500 text-xs font-medium flex items-center gap-1 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-colors"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={13} />
+                        Remove Round
                       </button>
                     )}
                   </div>
-                ))}
 
-                <button
-                  onClick={() => addQuestion(rIndex)}
-                  className="text-orange-600 text-sm flex items-center gap-1 hover:underline mt-1"
-                >
-                  <Plus size={14} />
-                  Add Question
-                </button>
-              </div>
-            ))}
+                  <div className="space-y-2 mb-3">
+                    {round.questions.map((q, qIndex) => (
+                      <div key={qIndex} className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-gray-400 w-5 flex-shrink-0">
+                          {qIndex + 1}.
+                        </span>
+                        <input
+                          type="text"
+                          placeholder="Type the question asked..."
+                          value={q}
+                          onChange={(e) =>
+                            updateQuestion(rIndex, qIndex, e.target.value)
+                          }
+                          className="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm
+                                     focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
+                        />
+                        {round.questions.length > 1 && (
+                          <button
+                            onClick={() => removeQuestion(rIndex, qIndex)}
+                            className="text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => addQuestion(rIndex)}
+                    className="text-orange-600 text-xs font-medium flex items-center gap-1 hover:bg-orange-50 px-2.5 py-1.5 rounded-lg transition-colors"
+                  >
+                    <Plus size={13} />
+                    Add Question
+                  </button>
+                </div>
+              ))}
+            </div>
 
             <button
               onClick={addRound}
-              className="text-sm font-medium text-orange-600 border border-orange-200 rounded-lg px-4 py-2 hover:bg-orange-50 transition-colors"
+              className="w-full mt-4 text-sm font-medium text-orange-600 border border-dashed border-orange-300 rounded-xl py-3 hover:bg-orange-50 transition-colors"
             >
               + Add Another Round
             </button>
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg"
-          >
-            {submitting ? "Submitting..." : "Submit"}
-          </button>
-        </div>
+          {/* Submit */}
+          <div className="flex items-center justify-between bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <p className="text-sm text-gray-500">
+              Your contribution helps others prepare smarter. Thank you!
+            </p>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed
+                         text-white font-semibold px-7 py-3 rounded-xl transition-colors whitespace-nowrap"
+            >
+              {submitting ? "Submitting..." : "Submit Experience"}
+            </button>
+          </div>
+        </main>
       </div>
     </div>
   );

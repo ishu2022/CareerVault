@@ -1,6 +1,7 @@
 import { AppProvider } from "./context/AppContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Companies from "./pages/Companies";
 import CompanyDetail from "./pages/CompanyDetail";
@@ -15,7 +16,14 @@ function App() {
     <AppProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+
+          {/* Login Page */}
+          <Route path="/" element={<Login />} />
+
+          {/* Dashboard */}
+          <Route path="/dashboard" element={<Dashboard />} />
+
+          {/* Other Pages */}
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:companyName" element={<CompanyDetail />} />
           <Route path="/questions" element={<Questions />} />
@@ -23,6 +31,7 @@ function App() {
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/contribute" element={<Contribute />} />
           <Route path="/about" element={<About />} />
+
         </Routes>
       </Router>
     </AppProvider>

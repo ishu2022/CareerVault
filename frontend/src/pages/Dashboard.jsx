@@ -106,7 +106,7 @@ export default function Dashboard() {
       <Sidebar />
 
       <div className="flex-1 min-w-0">
-        <Navbar userName="Aditya" />
+        <Navbar userName="Sakshi" />
 
         <main className="p-8 space-y-6">
           {/* Stats row */}

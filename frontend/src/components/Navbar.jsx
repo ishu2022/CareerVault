@@ -1,12 +1,25 @@
-import { Search, Bell, ChevronDown } from "lucide-react";
+import { Search, Bell, ChevronDown, LogOut } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-// title/subtitle are optional. If a page doesn't pass them, we fall
-// back to the dashboard's "Welcome back" greeting, so Dashboard.jsx
-// doesn't need any changes.
-export default function Navbar({ userName = "Ishika", title, subtitle }) {
+export default function Navbar({ title, subtitle }) {
+  const { userName, logout } = useAuth();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const heading = title || `Welcome back, ${userName}! 👋`;
   const subheading =
     subtitle || "Explore interview experiences and ace your next interview.";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between px-8 py-5 bg-white border-b border-gray-100">
@@ -32,11 +45,32 @@ export default function Navbar({ userName = "Ishika", title, subtitle }) {
           <Bell className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-1 cursor-pointer">
-          <div className="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center font-semibold text-sm">
-            {userName.charAt(0)}
-          </div>
-          <ChevronDown className="w-4 h-4 text-gray-400" />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex items-center gap-1 cursor-pointer"
+          >
+            <div className="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center font-semibold text-sm">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <ChevronDown className="w-4 h-4 text-gray-400" />
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-100 rounded-xl shadow-md z-10 overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-100">
+                <p className="text-sm font-medium text-gray-900">{userName}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={14} />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

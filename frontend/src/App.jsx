@@ -1,5 +1,7 @@
 import { AppProvider } from "./context/AppContext";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -14,32 +16,93 @@ import MockTest from "./pages/MockTest";
 
 function App() {
   return (
-    <AppProvider>
-      <Router>
-        <Routes>
+    <AuthProvider>
+      <AppProvider>
+        <Router>
+          <Routes>
+            {/* Default route redirects to dashboard; ProtectedRoute below handles auth check */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Login Page */}
-          <Route path="/" element={<Login />} />
+            {/* Public route */}
+            <Route path="/login" element={<Login />} />
 
-          {/* Dashboard */}
-          <Route path="/dashboard" element={<Dashboard />} />
-
-          {/* Other Pages */}
-          <Route path="/companies" element={<Companies />} />
-          <Route path="/companies/:companyName" element={<CompanyDetail />} />
-          <Route path="/questions" element={<Questions />} />
-          <Route path="/oa-prep" element={<OAPrep />} />
-          <Route path="/bookmarks" element={<Bookmarks />} />
-          <Route path="/contribute" element={<Contribute />} />
-          <Route path="/about" element={<About />} />
-<<<<<<< HEAD
-
-=======
-          <Route path="/oa-prep/mock" element={<MockTest />} />
->>>>>>> bb4ddcf4cb5d7ba12c0e101b1e3ccaedc0eb500e
-        </Routes>
-      </Router>
-    </AppProvider>
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/companies"
+              element={
+                <ProtectedRoute>
+                  <Companies />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/companies/:companyName"
+              element={
+                <ProtectedRoute>
+                  <CompanyDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/questions"
+              element={
+                <ProtectedRoute>
+                  <Questions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/oa-prep"
+              element={
+                <ProtectedRoute>
+                  <OAPrep />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/oa-prep/mock"
+              element={
+                <ProtectedRoute>
+                  <MockTest />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bookmarks"
+              element={
+                <ProtectedRoute>
+                  <Bookmarks />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contribute"
+              element={
+                <ProtectedRoute>
+                  <Contribute />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <ProtectedRoute>
+                  <About />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AppProvider>
+    </AuthProvider>
   );
 }
 

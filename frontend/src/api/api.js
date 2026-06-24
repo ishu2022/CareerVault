@@ -62,10 +62,6 @@ export const searchQuestions = async (keyword) => {
 };
 
 // ---------- EXPERIENCES / CONTRIBUTIONS ----------
-// ASSUMED ROUTE: GET /experiences?limit=&sort=-created_at
-// Confirm the route name + sort param with the Flask side once a list
-// endpoint exists; this currently mirrors the POST /experiences route
-// that submitExperience already uses.
 export const getRecentExperiences = async (limit = 4) => {
   const res = await apiClient.get("/experiences", {
     params: { limit, sort: "-created_at" },
@@ -75,6 +71,11 @@ export const getRecentExperiences = async (limit = 4) => {
 
 export const submitExperience = async (formData) => {
   const res = await apiClient.post("/experiences", formData);
+  return res.data;
+};
+
+export const deleteExperience = async (id) => {
+  const res = await apiClient.delete(`/experiences/${id}`);
   return res.data;
 };
 

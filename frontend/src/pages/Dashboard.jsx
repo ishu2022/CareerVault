@@ -62,7 +62,6 @@ const trendData = [
 
 const recentInterviews = [
   { company: "Amazon", role: "SDE Intern Interview", year: "2025", timeAgo: "2 hours ago", initial: "a", logoBg: "bg-gray-900", logoText: "text-white" },
-  { company: "Google", role: "Software Engineer Interview", year: "2025", timeAgo: "5 hours ago", initial: "G", logoBg: "bg-white border border-gray-200", logoText: "text-blue-500" },
   { company: "Microsoft", role: "Product Manager Interview", year: "2025", timeAgo: "1 day ago", initial: "M", logoBg: "bg-white border border-gray-200", logoText: "text-emerald-500" },
   { company: "Oracle", role: "Developer Interview", year: "2025", timeAgo: "2 days ago", initial: "O", logoBg: "bg-red-600", logoText: "text-white" },
 ];

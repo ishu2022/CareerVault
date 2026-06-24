@@ -76,3 +76,30 @@ def submit_experience():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+
+from bson import ObjectId
+from bson.errors import InvalidId
+
+@bp.route("/experiences/<string:experience_id>", methods=["DELETE"])
+def delete_experience(experience_id):
+    """
+    DELETE /api/v1/experiences/<id>
+    Response: { "message": "Experience deleted successfully" }
+    """
+    try:
+        try:
+            obj_id = ObjectId(experience_id)
+        except InvalidId:
+            return jsonify({"error": "Invalid experience id"}), 400
+
+        experience = InterviewExperience.objects(id=obj_id).first()
+        if not experience:
+            return jsonify({"error": "Experience not found"}), 404
+
+        experience.delete()
+        return jsonify({"message": "Experience deleted successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

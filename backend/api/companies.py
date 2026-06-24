@@ -28,6 +28,7 @@ def get_company(name):
       "company": "Amazon",
       "experiences": [
         {
+          "id":         "65f...",
           "role":       "SDE Intern",
           "year":       "2025",
           "difficulty": "medium",
@@ -49,6 +50,7 @@ def get_company(name):
 
         experiences = [
             {
+                "id":         str(d.id),
                 "role":       d.role,
                 "year":       d.year,
                 "difficulty": d.difficulty,

@@ -117,4 +117,23 @@ export const removeBookmark = (questionId) => {
   const updated = current.filter((id) => id !== questionId);
   localStorage.setItem("careervault_bookmarks", JSON.stringify(updated));
   return updated;
+<<<<<<< HEAD
+=======
+};
+
+// ---------- CONTRIBUTE (no backend endpoint yet — placeholder) ----------
+export const submitExperience = async (formData) => {
+  const res = await apiClient.post("/experiences", formData);
+  return res.data;
+};
+
+export const getPopularTopics = async () => {
+  const res = await apiClient.get("/stats/topics");
+  return res.data;
+};
+
+export const deleteExperience = async (experienceId) => {
+  const res = await apiClient.delete(`/experiences/${experienceId}`);
+  return res.data;
+>>>>>>> bb4ddcf4cb5d7ba12c0e101b1e3ccaedc0eb500e
 };

@@ -25,7 +25,7 @@ function App() {
         <Router>
           <Routes>
             {/* Default route redirects to dashboard; ProtectedRoute below handles auth check */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Landing />} />
 
             {/* Public route */}
             <Route path="/login" element={<Login />} />
@@ -47,7 +47,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Landing />} />
             <Route
               path="/companies/:companyName"
               element={

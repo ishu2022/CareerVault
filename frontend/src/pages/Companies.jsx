@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import CompanyCard from "../components/CompanyCard";
 import { useAppContext } from "../context/AppContext";
 import { getCompanies } from "../api/api";
+import CompanyLogo from "../components/CompanyLogo";
 
 const Companies = () => {
   const { searchQuery, setSearchQuery } = useAppContext();
@@ -40,7 +41,11 @@ const Companies = () => {
   };
 
   const getInitial = (name) => name.charAt(0).toUpperCase();
-
+  
+  const getLogo = (name) => {
+  const fileName = name.toLowerCase().replace(/\s+/g, "-");
+  return `/logos/${fileName}.svg`;
+};
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -84,11 +89,7 @@ const Companies = () => {
                     key={name}
                     name={name}
                     interviews={null}
-                    logo={
-                      <span className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-gray-100 text-gray-700">
-                        {getInitial(name)}
-                      </span>
-                    }
+                    logo={<CompanyLogo name={name} />}
                     onViewDetails={() => handleViewDetails(name)}
                   />
                 ))

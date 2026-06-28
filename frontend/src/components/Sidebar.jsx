@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Package,
   Home,
@@ -49,21 +49,22 @@ export default function Sidebar({ activeItem = "Dashboard" }) {
       {/* Navigation */}
       <nav className="flex-1 px-3 mt-2 space-y-1">
         {navItems.map(({ label, icon: Icon, path }) => {
-          const active = label === activeItem;
 
           return (
-            <Link
-              key={label}
-              to={path}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                active
-                  ? "bg-orange-500/15 text-orange-400 font-medium"
-                  : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
-              }`}
-            >
+            <NavLink
+  key={label}
+  to={path}
+  className={({ isActive }) =>
+    `w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+      isActive
+        ? "bg-orange-500/15 text-orange-400 font-medium"
+        : "text-gray-400 hover:bg-white/5 hover:text-gray-200"
+    }`
+  }
+>
               <Icon className="w-4 h-4" />
               {label}
-            </Link>
+            </NavLink>
           );
         })}
       </nav>

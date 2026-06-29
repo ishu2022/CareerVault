@@ -8,25 +8,21 @@ import { searchQuestions } from "../api/api";
 
 const Questions = () => {
   const { searchQuery, setSearchQuery } = useAppContext();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [results, setResults]               = useState([]);
+  const [loading, setLoading]               = useState(false);
+  const [error, setError]                   = useState(null);
   const [selectedCompany, setSelectedCompany] = useState("All");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched]       = useState(false);
 
-  // Debounced search — waits 300ms after typing stops before calling backend
   useEffect(() => {
     if (!searchQuery.trim()) {
       setResults([]);
       setHasSearched(false);
       return;
     }
-
-    const timer = setTimeout(() => {
-      fetchResults(searchQuery);
-    }, 300);
-
+    const timer = setTimeout(() => fetchResults(searchQuery), 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -45,12 +41,7 @@ const Questions = () => {
     }
   }, []);
 
-  // Unique companies from current result set, for the filter dropdown
-  const companyOptions = [
-    "All",
-    ...new Set(results.map((r) => r.company)),
-  ];
-
+  const companyOptions = ["All", ...new Set(results.map((r) => r.company))];
   const filteredResults =
     selectedCompany === "All"
       ? results
@@ -58,17 +49,15 @@ const Questions = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
-      <div className="flex-1 flex flex-col">
-        <Navbar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar onMobileMenuOpen={() => setMobileOpen(true)} />
 
-        <main className="p-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Question Search
-            </h1>
-            <p className="text-gray-500 mt-1">
+        <main className="p-4 md:p-6 lg:p-8">
+          <div className="mb-5 md:mb-6">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Question Search</h1>
+            <p className="text-gray-500 mt-1 text-sm">
               Search interview questions across all companies
             </p>
           </div>
@@ -90,9 +79,9 @@ const Questions = () => {
             />
           </div>
 
-          {/* Company filter — only shown once we have results to filter */}
+          {/* Company filter */}
           {results.length > 0 && (
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-5 md:mb-6 flex-wrap">
               <span className="text-sm text-gray-500">Company:</span>
               <select
                 value={selectedCompany}
@@ -100,9 +89,7 @@ const Questions = () => {
                 className="text-sm border border-gray-200 rounded-lg px-3 py-2 text-gray-700 bg-white"
               >
                 {companyOptions.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </div>
@@ -110,7 +97,7 @@ const Questions = () => {
 
           {/* Results header */}
           {hasSearched && !loading && (
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
               <div className="flex items-center gap-3">
                 <h2 className="text-lg font-bold text-gray-900">Results</h2>
                 <span className="text-xs px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full">
@@ -120,14 +107,8 @@ const Questions = () => {
             </div>
           )}
 
-          {/* States: loading / error / empty / results */}
-          {loading && (
-            <p className="text-gray-500 text-sm">Searching questions...</p>
-          )}
-
-          {!loading && error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
+          {loading && <p className="text-gray-500 text-sm">Searching questions...</p>}
+          {!loading && error && <p className="text-red-500 text-sm">{error}</p>}
 
           {!loading && !error && hasSearched && filteredResults.length === 0 && (
             <p className="text-gray-500 text-center mt-10">
@@ -142,7 +123,7 @@ const Questions = () => {
           )}
 
           {!loading && !error && filteredResults.length > 0 && (
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {filteredResults.map((item, index) => (
                 <QuestionCard
                   key={`${item.company}-${index}`}

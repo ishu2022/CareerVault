@@ -10,17 +10,18 @@ import CompanyLogo from "../components/CompanyLogo";
 const Companies = () => {
   const { searchQuery, setSearchQuery } = useAppContext();
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await getCompanies(); // array of name strings
+        const data = await getCompanies();
         setCompanies(data);
       } catch (err) {
         setError("Failed to load companies. Please try again.");
@@ -28,7 +29,6 @@ const Companies = () => {
         setLoading(false);
       }
     };
-
     fetchCompanies();
   }, []);
 
@@ -36,38 +36,31 @@ const Companies = () => {
     name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleViewDetails = (companyName) => {
-    navigate(`/companies/${companyName}`);
-  };
-
-  const getInitial = (name) => name.charAt(0).toUpperCase();
-  
-  const getLogo = (name) => {
-  const fileName = name.toLowerCase().replace(/\s+/g, "-");
-  return `/logos/${fileName}.svg`;
-};
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
+      />
 
-      <div className="flex-1 flex flex-col">
-        <Navbar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar onMobileMenuOpen={() => setMobileOpen(true)} />
 
-        <main className="p-8">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Companies</h1>
-            <p className="text-gray-500 mt-1">
+        <main className="p-4 md:p-6 lg:p-8">
+          <div className="mb-5 md:mb-6">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Companies</h1>
+            <p className="text-gray-500 mt-1 text-sm">
               Browse interview experiences by company
             </p>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-5 md:mb-6">
             <input
               type="text"
               placeholder="Search companies..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full md:w-80 px-4 py-2 border border-gray-300 rounded-lg
+              className="w-full md:w-80 px-4 py-2.5 border border-gray-300 rounded-lg
                          focus:outline-none focus:ring-2 focus:ring-orange-400
                          text-sm text-gray-700"
             />
@@ -82,7 +75,7 @@ const Companies = () => {
           )}
 
           {!loading && !error && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
               {filteredCompanies.length > 0 ? (
                 filteredCompanies.map((name) => (
                   <CompanyCard
@@ -90,7 +83,7 @@ const Companies = () => {
                     name={name}
                     interviews={null}
                     logo={<CompanyLogo name={name} />}
-                    onViewDetails={() => handleViewDetails(name)}
+                    onViewDetails={() => navigate(`/companies/${name}`)}
                   />
                 ))
               ) : (

@@ -3,31 +3,36 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { Rocket, Plus, Trash2, CheckCircle, AlertCircle, FileText, Award } from "lucide-react";
 import { submitExperience } from "../api/api";
+import { useAuth } from "../context/AuthContext";
+import {
+  notifyExperienceSubmitted,
+  notifyExperienceDeleted,
+} from "../utils/notificationUtils";
 
 const emptyRound = () => ({ round_type: "technical", questions: [""], tips: [""] });
 
 const roundTypeStyles = {
   technical: "bg-blue-50 text-blue-600 border-blue-200",
-  hr: "bg-pink-50 text-pink-600 border-pink-200",
-  managerial: "bg-purple-50 text-purple-600 border-purple-200",
+  hr:        "bg-pink-50 text-pink-600 border-pink-200",
+  managerial:"bg-purple-50 text-purple-600 border-purple-200",
 };
 
 export default function Contribute() {
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
-  const [year, setYear] = useState("");
-  const [difficulty, setDifficulty] = useState("medium");
-  const [outcome, setOutcome] = useState("unknown");
-  const [rounds, setRounds] = useState([emptyRound()]);
+  const { currentUser } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
+  const [company,    setCompany]    = useState("");
+  const [role,       setRole]       = useState("");
+  const [year,       setYear]       = useState("");
+  const [difficulty, setDifficulty] = useState("medium");
+  const [outcome,    setOutcome]    = useState("unknown");
+  const [rounds,     setRounds]     = useState([emptyRound()]);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [error,      setError]      = useState(null);
+  const [success,    setSuccess]    = useState(false);
 
   const updateRound = (index, field, value) => {
-    setRounds((prev) =>
-      prev.map((r, i) => (i === index ? { ...r, [field]: value } : r))
-    );
+    setRounds((prev) => prev.map((r, i) => (i === index ? { ...r, [field]: value } : r)));
   };
 
   const updateQuestion = (roundIndex, qIndex, value) => {
@@ -41,27 +46,21 @@ export default function Contribute() {
     );
   };
 
-  const addQuestion = (roundIndex) => {
+  const addQuestion  = (roundIndex) =>
     setRounds((prev) =>
-      prev.map((r, i) =>
-        i === roundIndex ? { ...r, questions: [...r.questions, ""] } : r
-      )
+      prev.map((r, i) => i === roundIndex ? { ...r, questions: [...r.questions, ""] } : r)
     );
-  };
 
-  const removeQuestion = (roundIndex, qIndex) => {
+  const removeQuestion = (roundIndex, qIndex) =>
     setRounds((prev) =>
       prev.map((r, i) => {
         if (i !== roundIndex) return r;
         return { ...r, questions: r.questions.filter((_, qi) => qi !== qIndex) };
       })
     );
-  };
 
-  const addRound = () => setRounds((prev) => [...prev, emptyRound()]);
-
-  const removeRound = (index) =>
-    setRounds((prev) => prev.filter((_, i) => i !== index));
+  const addRound    = () => setRounds((prev) => [...prev, emptyRound()]);
+  const removeRound = (index) => setRounds((prev) => prev.filter((_, i) => i !== index));
 
   const handleSubmit = async () => {
     if (!company.trim()) {
@@ -75,19 +74,22 @@ export default function Contribute() {
 
     const payload = {
       company: company.trim(),
-      role: role.trim(),
-      year: year.trim(),
+      role:    role.trim(),
+      year:    year.trim(),
       difficulty,
       outcome,
       rounds: rounds.map((r) => ({
         round_type: r.round_type,
-        questions: r.questions.filter((q) => q.trim()),
-        tips: r.tips.filter((t) => t.trim()),
+        questions:  r.questions.filter((q) => q.trim()),
+        tips:       r.tips.filter((t) => t.trim()),
       })),
     };
 
     try {
       await submitExperience(payload);
+      if (currentUser?.uid) {
+        await notifyExperienceSubmitted(currentUser.uid, payload.company);
+      }
       setSuccess(true);
       setCompany("");
       setRole("");
@@ -102,6 +104,18 @@ export default function Contribute() {
     }
   };
 
+  const handleDelete = async (experienceId, companyName) => {
+    try {
+      const res = await fetch(`/api/v1/experiences/${experienceId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Delete failed");
+      if (currentUser?.uid) {
+        await notifyExperienceDeleted(currentUser.uid, companyName);
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
+
   const totalQuestions = rounds.reduce(
     (sum, r) => sum + r.questions.filter((q) => q.trim()).length,
     0
@@ -109,20 +123,20 @@ export default function Contribute() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar activeItem="Contribute" />
+      <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
-      <div className="flex-1 flex flex-col">
-        <Navbar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar onMobileMenuOpen={() => setMobileOpen(true)} />
 
-        <main className="p-8 max-w-4xl">
+        <main className="p-4 md:p-6 lg:p-8 max-w-4xl">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
-              <Rocket className="w-7 h-7 text-orange-500" />
+          <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0">
+              <Rocket className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Contribute</h1>
-              <p className="text-gray-500 mt-0.5">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900">Contribute</h1>
+              <p className="text-gray-500 mt-0.5 text-sm">
                 Share your interview experience and help others prepare better.
               </p>
             </div>
@@ -144,12 +158,10 @@ export default function Contribute() {
           )}
 
           {/* Section 1: Basic Info */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mb-5">
+          <div className="bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm mb-5">
             <div className="flex items-center gap-2 mb-5">
               <Award size={16} className="text-orange-500" />
-              <h2 className="text-base font-bold text-gray-900">
-                Interview Details
-              </h2>
+              <h2 className="text-base font-bold text-gray-900">Interview Details</h2>
             </div>
 
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
@@ -164,11 +176,9 @@ export default function Contribute() {
                          focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
             />
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                  Role
-                </label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Role</label>
                 <input
                   type="text"
                   placeholder="e.g. SDE Intern"
@@ -179,9 +189,7 @@ export default function Contribute() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                  Year
-                </label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Year</label>
                 <input
                   type="text"
                   placeholder="e.g. 2025"
@@ -193,11 +201,9 @@ export default function Contribute() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                  Difficulty
-                </label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Difficulty</label>
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
@@ -210,9 +216,7 @@ export default function Contribute() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                  Outcome
-                </label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">Outcome</label>
                 <select
                   value={outcome}
                   onChange={(e) => setOutcome(e.target.value)}
@@ -228,13 +232,11 @@ export default function Contribute() {
           </div>
 
           {/* Section 2: Rounds */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm mb-5">
+          <div className="bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm mb-5">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-orange-500" />
-                <h2 className="text-base font-bold text-gray-900">
-                  Interview Rounds
-                </h2>
+                <h2 className="text-base font-bold text-gray-900">Interview Rounds</h2>
               </div>
               {totalQuestions > 0 && (
                 <span className="text-xs px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full">
@@ -245,16 +247,11 @@ export default function Contribute() {
 
             <div className="space-y-4">
               {rounds.map((round, rIndex) => (
-                <div
-                  key={rIndex}
-                  className="border border-gray-200 rounded-xl p-5"
-                >
-                  <div className="flex items-center justify-between mb-4">
+                <div key={rIndex} className="border border-gray-200 rounded-xl p-4 md:p-5">
+                  <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                     <select
                       value={round.round_type}
-                      onChange={(e) =>
-                        updateRound(rIndex, "round_type", e.target.value)
-                      }
+                      onChange={(e) => updateRound(rIndex, "round_type", e.target.value)}
                       className={`text-sm font-medium px-3 py-1.5 rounded-lg border capitalize ${
                         roundTypeStyles[round.round_type] || roundTypeStyles.technical
                       }`}
@@ -278,23 +275,21 @@ export default function Contribute() {
                   <div className="space-y-2 mb-3">
                     {round.questions.map((q, qIndex) => (
                       <div key={qIndex} className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-gray-400 w-5 flex-shrink-0">
+                        <span className="text-xs font-medium text-gray-400 w-5 shrink-0">
                           {qIndex + 1}.
                         </span>
                         <input
                           type="text"
                           placeholder="Type the question asked..."
                           value={q}
-                          onChange={(e) =>
-                            updateQuestion(rIndex, qIndex, e.target.value)
-                          }
-                          className="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm
+                          onChange={(e) => updateQuestion(rIndex, qIndex, e.target.value)}
+                          className="flex-1 min-w-0 border border-gray-200 rounded-lg px-3 py-2.5 text-sm
                                      focus:outline-none focus:ring-2 focus:ring-orange-400 transition-shadow"
                         />
                         {round.questions.length > 1 && (
                           <button
                             onClick={() => removeQuestion(rIndex, qIndex)}
-                            className="text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
+                            className="text-gray-300 hover:text-red-500 transition-colors shrink-0"
                           >
                             <Trash2 size={14} />
                           </button>
@@ -323,14 +318,14 @@ export default function Contribute() {
           </div>
 
           {/* Submit */}
-          <div className="flex items-center justify-between bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white border border-gray-100 rounded-2xl p-4 md:p-5 shadow-sm">
             <p className="text-sm text-gray-500">
               Your contribution helps others prepare smarter. Thank you!
             </p>
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed
+              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed
                          text-white font-semibold px-7 py-3 rounded-xl transition-colors whitespace-nowrap"
             >
               {submitting ? "Submitting..." : "Submit Experience"}

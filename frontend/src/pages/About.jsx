@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
@@ -29,17 +30,18 @@ const values = [
 
 export default function About() {
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar activeItem="About Us" />
+      <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
-      <div className="flex-1 flex flex-col">
-        <Navbar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Navbar onMobileMenuOpen={() => setMobileOpen(true)} />
 
-        <main className="p-8 max-w-5xl">
+        <main className="p-4 md:p-6 lg:p-8 max-w-5xl">
           {/* Hero */}
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-10 mb-8 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 md:p-10 mb-6 md:mb-8 text-white relative overflow-hidden">
             <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full" />
             <div className="absolute right-16 bottom-0 w-24 h-24 bg-white/10 rounded-full" />
 
@@ -47,8 +49,8 @@ export default function About() {
               <span className="inline-block text-xs font-semibold bg-white/20 px-3 py-1 rounded-full mb-4">
                 Interview Knowledge Explorer
               </span>
-              <h1 className="text-3xl font-bold mb-3">About CareerVault</h1>
-              <p className="text-orange-50 text-base leading-relaxed">
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">About CareerVault</h1>
+              <p className="text-orange-50 text-sm md:text-base leading-relaxed">
                 We help students and professionals prepare smarter — by turning
                 real interview experiences into searchable, structured knowledge.
               </p>
@@ -56,12 +58,12 @@ export default function About() {
           </div>
 
           {/* Who We Are */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm mb-8">
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 md:p-8 shadow-sm mb-6 md:mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Heart size={18} className="text-orange-500" />
               <h2 className="text-lg font-bold text-gray-900">Who We Are</h2>
             </div>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 leading-relaxed text-sm md:text-base">
               CareerVault is a platform where students and professionals explore
               real interview experiences, browse company-specific questions, and
               prepare effectively for placements. Instead of relying on outdated
@@ -72,35 +74,29 @@ export default function About() {
           </div>
 
           {/* Value cards */}
-          <div className="grid md:grid-cols-3 gap-5 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-6 md:mb-8">
             {values.map((v) => {
               const Icon = v.icon;
               return (
                 <div
                   key={v.title}
-                  className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-white border border-gray-100 rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${v.iconBg}`}
-                  >
-                    <Icon size={22} className={v.iconColor} />
+                  <div className={`w-11 h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center mb-4 ${v.iconBg}`}>
+                    <Icon size={20} className={v.iconColor} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 mb-2">
-                    {v.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    {v.description}
-                  </p>
+                  <h3 className="text-base font-bold text-gray-900 mb-2">{v.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{v.description}</p>
                 </div>
               );
             })}
           </div>
 
           {/* CTA */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex items-center justify-between gap-6 flex-wrap">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                <Building2 size={22} className="text-orange-500" />
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 md:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="flex items-start sm:items-center gap-4">
+              <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                <Building2 size={20} className="text-orange-500" />
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 text-base mb-1">
@@ -114,7 +110,7 @@ export default function About() {
 
             <button
               onClick={() => navigate("/contribute")}
-              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-3 rounded-xl transition-colors whitespace-nowrap"
+              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-3 rounded-xl transition-colors whitespace-nowrap w-full sm:w-auto justify-center"
             >
               Contribute Now
               <ArrowRight size={16} />
@@ -122,7 +118,7 @@ export default function About() {
           </div>
 
           {/* Feedback note */}
-          <div className="flex items-center gap-2 text-sm text-gray-400 mt-6">
+          <div className="flex items-center gap-2 text-sm text-gray-400 mt-5 md:mt-6">
             <MessageSquare size={14} />
             Have feedback or suggestions? Use the Feedback link in the sidebar.
           </div>

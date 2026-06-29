@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, BookOpen } from "lucide-react";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, provider } from "../firebase";
+import { notifyFirstLogin } from "../utils/notificationUtils";
 
 const stats = [
   { value: "28", label: "Companies" },
@@ -80,10 +81,18 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // ── Google login ──────────────────────────────────────────────────────────
   const handleGoogleLogin = async () => {
     try {
       setError(null);
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+
+      // additionalUserInfo is available on the result from signInWithPopup
+      const isNewUser = result._tokenResponse?.isNewUser ?? false;
+      if (isNewUser) {
+        await notifyFirstLogin(result.user.uid);
+      }
+
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
@@ -91,6 +100,7 @@ export default function Login() {
     }
   };
 
+  // ── Email/password login ──────────────────────────────────────────────────
   const handleEmailLogin = async () => {
     if (!email.trim() || !password.trim()) {
       setError("Please enter both email and password.");
@@ -100,6 +110,8 @@ export default function Login() {
     try {
       setSubmitting(true);
       setError(null);
+      // Email/password sign-in does not expose isNewUser reliably,
+      // so we do NOT fire notifyFirstLogin here (registration flow would handle it).
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (err) {
@@ -192,7 +204,7 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Sign In button — now wired to real Firebase email/password auth */}
+        {/* Sign In */}
         <button
           onClick={handleEmailLogin}
           disabled={submitting}

@@ -1,34 +1,82 @@
-// CompanyLogo.jsx
-//
-// We don't have real logo images for every company yet, so this shows
-// a colored square with the company's first letter instead - a common
-// "avatar placeholder" pattern.
-//
-// name.charCodeAt(0) turns the first letter into a number (e.g. "A" -> 65).
-// Using % colors.length (the remainder, same as Python's %) maps that
-// number onto one of our 8 colors. Because a name's first letter never
-// changes, the same company always gets the same color.
+const localLogos = {
+  Google: "/logos/simple-icons-develop/icons/google.svg",
+  Oracle: "/logos/simple-icons-develop/icons/oracle.svg",
+  Citi: "/logos/simple-icons-develop/icons/citi.svg",
+  "Bank of America": "/logos/simple-icons-develop/icons/bankofamerica.svg",
+  "Goldman Sachs": "/logos/simple-icons-develop/icons/goldmansachs.svg",
+  HSBC: "/logos/simple-icons-develop/icons/hsbc.svg",
+  Mastercard: "/logos/simple-icons-develop/icons/mastercard.svg",
+  Visa: "/logos/simple-icons-develop/icons/visa.svg",
+  "Wells Fargo": "/logos/simple-icons-develop/icons/wellsfargo.svg",
+  SAP: "/logos/simple-icons-develop/icons/sap.svg",
+};
 
-const colors = [
-  "bg-gray-900 text-white",
-  "bg-blue-600 text-white",
-  "bg-emerald-600 text-white",
-  "bg-red-600 text-white",
-  "bg-purple-600 text-white",
-  "bg-amber-500 text-white",
-  "bg-sky-600 text-white",
-  "bg-pink-600 text-white",
-];
+const companyDomains = {
+  Google: "google.com",
+  Microsoft: "microsoft.com",
+  Amazon: "amazon.com",
+  Oracle: "oracle.com",
+  Citi: "citi.com",
+  "Goldman Sachs": "goldmansachs.com",
+  "Bank of America": "bankofamerica.com",
+  "BNY Mellon": "bnymellon.com",
+  HSBC: "hsbc.com",
+  Hitit: "hititcs.com",
+  "JPMorgan Chase": "jpmorganchase.com",
+  Mastercard: "mastercard.com",
+  "Morgan Stanley": "morganstanley.com",
+  NPCI: "npci.org.in",
+  PwC: "pwc.com",
+  Visa: "visa.com",
+  UBS: "ubs.com",
+  "Wells Fargo": "wellsfargo.com",
+  Accela: "accela.com",
+  "D.E. Shaw": "deshaw.com",
+  "Dolat Capital": "dolatcapital.com",
+  "Mahindra Finance": "mahindrafinance.com",
+  "SAP Labs": "sap.com",
+  TestCo: "testco.com",
+  "Texas Instruments": "ti.com",
+  Tracelink: "tracelink.com",
+};
 
 export default function CompanyLogo({ name, size = "w-12 h-12" }) {
-  const initial = name.charAt(0).toUpperCase();
-  const colorClass = colors[name.charCodeAt(0) % colors.length];
+  const localLogo = localLogos[name];
+  const domain = companyDomains[name];
 
+  // Local SVG logo
+  if (localLogo) {
+    return (
+      <img
+        src={localLogo}
+        alt={name}
+        className={`${size} rounded-xl object-contain bg-white p-1`}
+        onError={(e) => {
+          if (domain) {
+            e.target.src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+          }
+        }}
+      />
+    );
+  }
+
+  // Google favicon
+  if (domain) {
+    return (
+      <img
+        src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`}
+        alt={name}
+        className={`${size} rounded-xl object-contain bg-white p-1`}
+      />
+    );
+  }
+
+  // Fallback: First Letter
   return (
     <div
-      className={`${size} rounded-xl flex items-center justify-center text-lg font-bold ${colorClass}`}
+      className={`${size} rounded-xl flex items-center justify-center bg-orange-500 text-white font-bold`}
     >
-      {initial}
+      {name.charAt(0).toUpperCase()}
     </div>
   );
 }
